@@ -27,7 +27,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['phone_number', 'name']
 
     def __str__(self):
-        return self.phone_number
+        return self.email
 
     def has_perm(self, perm, obj=None):
         return True
@@ -38,3 +38,15 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
+    image = models.ImageField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    about_me = models.CharField(max_length=255, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user.name
