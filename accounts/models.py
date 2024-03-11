@@ -48,5 +48,34 @@ class Profile(models.Model):
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
 
+    def get_followings(self):
+        temp = self.followings.all()
+        followers = []
+        for user in temp:
+            followers.append(user.following.user)
+        return followers
+
+    def get_followers(self):
+        temp = self.followers.all()
+        followings = []
+        for user in temp:
+            followings.append(user.profile.user)
+        return followings
+
     def __str__(self):
         return self.user.name
+
+
+class Follow(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followings')
+    following = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
+    accepted = models.BooleanField(default=False)
+    follow_at = models.DateTimeField(auto_now_add=True)
+    close_friend = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.profile == self.following:
+            raise ValueError("A user cannot follow themselves.")
+        if self.accepted is None:
+            self.accepted = self.following.is_public
+        super(Follow, self).save(*args, **kwargs)
