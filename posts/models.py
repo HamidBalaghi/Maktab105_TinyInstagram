@@ -12,3 +12,9 @@ class Post(models.Model):
     is_active = models.BooleanField(default=True)
     publish_at = models.DateTimeField(auto_now_add=True)
     publishable = models.BooleanField(default=True)
+
+
+class Image(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    image = models.ImageField()
+
