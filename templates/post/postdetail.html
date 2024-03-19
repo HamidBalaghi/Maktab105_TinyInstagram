@@ -1,0 +1,78 @@
+{% extends "base/base.html" %}
+
+{% block title %}Post details{% endblock %}
+
+{% block content %}
+    <main class="container mx-auto my-8">
+        <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Post image -->
+            <img src="{% static 'path_to_post_image.jpg' %}" class="w-full border border-gray-200 shadow-sm rounded-lg">
+            <!-- Details section -->
+            <div class="p-4">
+                <!-- Owner image and name -->
+                <div class="flex items-center mb-2">
+                    <img src="{% static 'path_to_owner_image.jpg' %}" class="w-10 h-10 rounded-full">
+                    <span class="ml-2">{{ post.owner_name }}</span>
+                </div>
+                <!-- Publish date -->
+                <div class="text-sm text-gray-500 mb-4">{{ post.publish_date }}</div>
+                <!-- Like and dislike buttons with counts -->
+                <div class="flex items-center mb-4">
+                    <button class="flex items-center mr-4">
+                        <span class="mr-1">👍</span> Like ({{ post.likes_count }})
+                    </button>
+                    <button class="flex items-center">
+                        <span class="mr-1">👎</span> Dislike ({{ post.dislikes_count }})
+                    </button>
+                </div>
+                <!-- Description -->
+                <div class="italic mb-4">{{ post.description }}</div>
+                <!-- Comments section -->
+                <div class="p-4">
+                    <h2 class="text-lg font-semibold mb-2">Comments</h2>
+                    <ul>
+                        {% for comment in post.comments.all %}
+                            <li>
+                                <div class="flex justify-between items-start text-justify mt-4">
+                                    <!-- Left div for commenter's image -->
+                                    <div class="w-10 h-10">
+                                        <img src="{{ comment.commenter.image.url }}"
+                                             alt="{{ comment.commenter.username }}'s profile picture"
+                                             class="w-full h-full rounded-full">
+                                    </div>
+                                    <!-- Right div for comment content and reply button -->
+                                    <div class="w-5/6 ml-4">
+                                        <!-- Top div for commenter's name and time of comment -->
+                                        <div class="flex justify-between items-center mb-1">
+                                            <div>
+                                                <a href="{{ comment.commenter.profile_url }}"
+                                                   class="text-blue-500">{{ comment.commenter.username }}</a>
+                                            </div>
+                                            <div class="text-sm text-gray-500">{{ comment.created_at }}</div>
+                                        </div>
+                                        <!-- Middle div for comment content -->
+                                        <div class="mt-1">
+                                            <p>{{ comment.content }}</p>
+                                        </div>
+                                        <!-- Bottom div for 'Reply' button -->
+                                        <div class="mt-2">
+                                            <button class="text-sm text-gray-500">Reply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- Text box and 'Post Comment' button for new comment -->
+                <div class="mt-4 flex justify-between items-center">
+                    <textarea class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
+                              placeholder="Write your comment here..."></textarea>
+                    <button class="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Post Comment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
