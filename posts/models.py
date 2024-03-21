@@ -13,8 +13,13 @@ class Post(models.Model):
     publish_at = models.DateTimeField(auto_now_add=True)
     publishable = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f'{self.profile} - {self.id}'
+
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='static/postImages')
 
+    def __str__(self):
+        return f'{self.post} - {self.id}'
