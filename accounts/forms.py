@@ -30,3 +30,7 @@ class CustomSignUpForm(forms.ModelForm):
 class CustomUserLoginForm(forms.Form):
     email = forms.EmailField(label='Email')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+
+class VerifyForm(forms.Form):
+    code = forms.CharField(label='Code', widget=forms.TextInput)
