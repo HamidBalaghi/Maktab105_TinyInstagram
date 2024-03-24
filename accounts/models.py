@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
+import random
 
 
 class User(AbstractBaseUser):
@@ -20,7 +21,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-
+    otp = models.IntegerField()
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -38,6 +39,10 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+    def save(self, *args, **kwargs):
+        self.otp = random.randint(100000, 999999)
+        super(User, self).save(*args, **kwargs)
 
 
 class Profile(models.Model):
