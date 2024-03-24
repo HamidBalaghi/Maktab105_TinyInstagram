@@ -4,6 +4,9 @@ from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .models import User
+from django.utils import timezone
+from datetime import timedelta
+from .utils import otp_sender
 
 
 # Create your views here.
@@ -13,7 +16,7 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.save()
+        otp_sender(user)
         return redirect('accounts:activation', pk=user.pk)
 
 
@@ -31,8 +34,9 @@ class CustomUserLoginView(View):
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
-                return redirect('accounts:signup')  # Redirect to the desired page after login
+                if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
+                    otp_sender(user)
+                return redirect('accounts:activation', pk=user.pk)  ## todo : i will redirect user to profile
             else:
                 form.add_error(None, 'Invalid email or password')
         return render(request, self.template_name, {'form': form})
@@ -48,20 +52,16 @@ class UserActivationView(FormView):
     template_name = 'account/verification.html'
     form_class = VerifyForm
 
-    def dispatch(self, request, *args, **kwargs):
+    def form_valid(self, form):
         self.pk = self.kwargs['pk']
         self.new_user = User.objects.get(pk=self.pk)
-        if self.new_user.is_active:
-            return redirect('accounts:login')
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
         code = form.cleaned_data.get('code')
-        if code == str(self.new_user.otp):
-            self.new_user.is_active = True
-            self.new_user.save()
+        if code == str(self.new_user.otp) and (timezone.now() - self.new_user.otp_created_at) < timedelta(minutes=5):
+            if not self.new_user.is_active:
+                self.new_user.is_active = True
+                self.new_user.save()
             login(self.request, self.new_user)
             return redirect('accounts:login')  ## todo : i will redirect user to profile
         else:
-            form.add_error(None, 'Invalid code')
+            form.add_error(None, 'Invalid code or OTP expired.')
             return self.form_invalid(form)
