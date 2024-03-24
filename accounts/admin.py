@@ -3,7 +3,7 @@ from .models import User, Profile, Follow
 
 
 class UserAccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'phone_number', 'email', 'is_active', 'is_admin')
+    list_display = ('name', 'phone_number', 'email', 'is_active', 'is_admin', 'otp')
 
 
 class ProfileAdmin(admin.ModelAdmin):
