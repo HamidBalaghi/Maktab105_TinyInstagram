@@ -44,7 +44,7 @@ class User(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, upload_to='media/profile_pics')
     created_at = models.DateTimeField(auto_now_add=True)
     about_me = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True)
