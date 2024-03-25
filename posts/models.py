@@ -7,7 +7,7 @@ from accounts.models import Profile
 
 
 class Post(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
     description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     publish_at = models.DateTimeField(auto_now_add=True)
