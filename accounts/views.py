@@ -1,4 +1,6 @@
-from django.views.generic import CreateView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, FormView, UpdateView, DetailView
 from .forms import CustomSignUpForm, CustomUserLoginForm, VerifyForm
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -7,6 +9,7 @@ from .models import User
 from django.utils import timezone
 from datetime import timedelta
 from .utils import otp_sender
+from .models import Profile
 
 
 # Create your views here.
@@ -60,8 +63,20 @@ class UserActivationView(FormView):
             if not self.new_user.is_active:
                 self.new_user.is_active = True
                 self.new_user.save()
+                Profile.objects.create(user=self.new_user)  # Attribution a profile to new user
             login(self.request, self.new_user)
             return redirect('accounts:login')  ## todo : i will redirect user to profile
         else:
             form.add_error(None, 'Invalid code or OTP expired.')
             return self.form_invalid(form)
+
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    template_name = 'account/editprofile.html'
+    fields = ['image', 'about_me']
+    success_url = reverse_lazy('accounts:test')
+
+
+def test(request, *args, **kwargs):
+    return render(request, template_name='test/test.html')
