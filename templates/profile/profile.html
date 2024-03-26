@@ -2,70 +2,79 @@
 
 {% block title %} profile {% endblock %}
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Profile Card -->
-    <div class="w-4/5 mx-auto bg-gradient-to-r from-gray-100 to-gray-400 rounded-xl overflow-hidden shadow-lg">
-        <!-- Profile Image and Username/Bio Section -->
-        <div class="flex p-6">
-            <!-- Profile Image (Left) -->
-            <div class="w-1/2">
-                <img class="object-contain w-full h-auto border border-gray-300 rounded-lg" src="{{ img }}" alt="Profile Image">
-                <!-- You can replace "profile_image.jpg" with the actual path to the profile owner's image -->
-            </div>
-            <!-- Username and Bio (Right) -->
-            <div class="w-1/2 ml-6">
-                <!-- Profile Owner's Name -->
-                <h2 class="text-xl font-semibold mb-2">{{ profile_owner.name }}</h2>
-                <!-- Profile Owner's Bio with text alignment justified and italic -->
-                <p class="text-gray-700 text-justify italic">{{ profile_owner.bio }}</p>
-                <!-- #new change: Added 'italic' class to make the bio text italic -->
-            </div>
-        </div>
-
-        <!-- Additional Info Section -->
-        <div class="p-6 border-t border-gray-200">
-            <div class="flex justify-evenly">
-                <!-- Posts Count -->
-                <div class="text-center">
-                    <h3 class="text-lg font-semibold mb-2">Posts</h3>
-                    <p class="text-gray-700">{{ profile_owner.posts_count }}</p>
-                </div>
-                <!-- Followers Count -->
-                <div class="text-center">
-                    <h3 class="text-lg font-semibold mb-2"><a href="{{ profile_owner.followers_link }}">Followers</a></h3>
-                    <p class="text-gray-700">{{ profile_owner.followers_count }}</p>
-                </div>
-                <!-- Following Count -->
-                <div class="text-center">
-                    <h3 class="text-lg font-semibold mb-2"><a href="{{ profile_owner.following_link }}">Following</a></h3>
-                    <p class="text-gray-700">{{ profile_owner.following_count }}</p>
-                </div>
-            </div>
-
-            <!-- Buttons Section -->
-            <div class="flex justify-evenly mt-4 mb-2">
-                <!-- New Post Button -->
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">New Post</button>
-                <!-- Edit Profile Button -->
-                <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit Profile</button>
-            </div>
-
-            <!-- Posts Section -->
-            <div class="m-2 grid grid-cols-3 gap-4">
-                <!-- Replace the following with Django template rendering -->
-                {% for post in profile_posts %}
-                <a href="{{ post.url }}">
-                    <div class="w-full relative">
-                        <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105" src="{{ post.image.url }}" alt="Post Image">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Profile Card -->
+        <div class="w-4/5 mx-auto bg-gradient-to-br from-blue-200 via-purple-400 to-red-200 rounded-xl overflow-hidden shadow-lg">
+            <!-- Profile Image and Username/Bio Section -->
+            <div class="flex p-6">
+                <!-- Profile Image (Left) -->
+                <div class="w-1/2">
+                    <div class="relative" style="width: 480px; height: 360px;">
+                        <img class="object-cover w-full h-full border border-gray-300 rounded-lg"
+                             style="object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }} {% endif %}" alt="Profile Image">
                     </div>
-                </a>
-                {% endfor %}
+                    <!-- You can replace "profile_image.jpg" with the actual path to the profile owner's image -->
+                </div>
+
+                <!-- Username and Bio (Right) -->
+                <div class="w-1/2 ml-6 mt-10">
+                    <!-- Profile Owner's Name -->
+                    <h2 class="text-xl font-semibold mb-2">{{ profile.user.name }}</h2>
+                    <!-- Profile Owner's Bio with text alignment justified and italic -->
+                    <p class="text-gray-700 text-justify italic">{{ profile.about_me }}</p>
+                    <!-- #new change: Added 'italic' class to make the bio text italic -->
+                </div>
+            </div>
+
+            <!-- Additional Info Section -->
+            <div class="p-6 border-t border-gray-200">
+                <div class="flex justify-evenly">
+                    <!-- Posts Count -->
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2">Posts</h3>
+                        <p class="text-gray-700">{{ profile.posts.count }}</p>
+                    </div>
+                    <!-- Followers Count -->
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2"><a href="#">Followers</a></h3>
+                        <p class="text-gray-700">{{ profile.followers_count }}</p>
+                    </div>
+                    <!-- Following Count -->
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2"><a href="#">Following</a></h3>
+                        <p class="text-gray-700">{{ profile.followings_count }}</p>
+                    </div>
+                </div>
+
+                <!-- Buttons Section -->
+                <div class="flex justify-evenly mt-4 mb-2">
+                    <!-- New Post Button -->
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">New Post
+                    </button>
+                    <!-- Edit Profile Button -->
+                    <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit Profile
+                    </button>
+                </div>
+
+                <!-- Posts Section -->
+                <div class="m-2 grid grid-cols-3 gap-4">
+                    <!-- Replace the following with Django template rendering -->
+                    {% for post in profile.posts.all %}
+                        <a href="#">
+                            <div class="w-full relative">
+                                <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
+                                     src="{{ post.first_image.image.url }}" alt="Post Image">
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
-    
+
+
+
 {% endblock %}
