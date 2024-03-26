@@ -44,7 +44,7 @@ class User(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
-    image = models.ImageField(null=True, blank=True, upload_to='media/profile_pics')
+    image = models.ImageField(null=True, blank=True, upload_to='images/')
     created_at = models.DateTimeField(auto_now_add=True)
     about_me = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -57,12 +57,18 @@ class Profile(models.Model):
             followers.append(user.following.user)
         return followers
 
+    def followings_count(self):
+        return len(self.get_followings())
+
     def get_followers(self):
         temp = self.followers.all()
         followings = []
         for user in temp:
             followings.append(user.profile.user)
         return followings
+
+    def followers_count(self):
+        return len(self.get_followers())
 
     def __str__(self):
         return self.user.name
