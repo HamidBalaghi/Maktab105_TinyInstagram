@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8-Digit Input Form</title>
+    <title>Verification</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
@@ -13,17 +13,17 @@
     <div class="max-w-md w-full space-y-8">
         <div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Verify Your 8-Digit Code
+                Verify Your 6-Digit Code
             </h2>
         </div>
         <form class="mt-8 space-y-6" action="" method="POST">
             {% csrf_token %}
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
-                    <label for="code" class="sr-only">8-Digit Code</label>
+                    <label for="code" class="sr-only">6-Digit Code</label>
                     <input id="code" name="code" type="text" autocomplete="off" required
                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                           placeholder="Enter 8-Digit Code">
+                           placeholder="Enter 6-Digit Code">
                 </div>
                 {% if form.non_field_errors %}
                     <p class="text-red-500 text-sm mt-1">{{ form.non_field_errors }}</p>
