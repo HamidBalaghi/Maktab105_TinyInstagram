@@ -8,9 +8,9 @@ class NoneActiveDeleterMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        time_limit = timezone.now() - timedelta(minutes=5)
-        for user in User.objects.filter(is_active=False, otp_created_at__lt=time_limit):
-            user.delete()
+        if request.path == '/signup/':
+            time_limit = timezone.now() - timedelta(minutes=5)
+            User.objects.filter(is_active=False, otp_created_at__lt=time_limit).delete()
 
         response = self.get_response(request)
 
