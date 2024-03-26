@@ -76,7 +76,7 @@ class UserActivationView(FormView):
 class EditProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = 'account/editprofile.html'
-    fields = ['image', 'about_me']
+    fields = ['image', 'about_me', 'is_active', 'is_public']
 
     def get_success_url(self):
         return reverse_lazy('accounts:profile', kwargs={'pk': self.kwargs['pk']})
