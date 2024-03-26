@@ -13,13 +13,20 @@ class Post(models.Model):
     publish_at = models.DateTimeField(auto_now_add=True)
     publishable = models.BooleanField(default=True)
 
+    def get_images(self):
+        images = self.images.all()
+        return images
+
+    def first_image(self):
+        return self.images.first()
+
     def __str__(self):
         return f'{self.profile} - {self.id}'
 
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='static/postImages')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return f'{self.post} - {self.id}'
