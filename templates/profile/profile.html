@@ -11,7 +11,8 @@
                 <div class="w-1/2">
                     <div class="relative" style="width: 480px; height: 360px;">
                         <img class="object-cover w-full h-full border border-gray-300 rounded-lg"
-                             style="object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }} {% endif %}" alt="Profile Image">
+                             style="object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }} {% endif %}"
+                             alt="Profile Image">
                     </div>
                     <!-- You can replace "profile_image.jpg" with the actual path to the profile owner's image -->
                 </div>
@@ -49,11 +50,11 @@
                 <!-- Buttons Section -->
                 <div class="flex justify-evenly mt-4 mb-2">
                     <!-- New Post Button -->
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">New Post
-                    </button>
+                    <a href="#"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">New Post</a>
                     <!-- Edit Profile Button -->
-                    <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit Profile
-                    </button>
+                    <a href="{% url 'accounts:editprofile' pk=profile.pk %}"
+                       class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit Profile</a>
                 </div>
 
                 <!-- Posts Section -->
