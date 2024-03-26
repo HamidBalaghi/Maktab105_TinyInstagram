@@ -4,7 +4,7 @@ from django.views.generic import CreateView, FormView, UpdateView, DetailView
 from .forms import CustomSignUpForm, CustomUserLoginForm, VerifyForm
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import User
 from django.utils import timezone
 from datetime import timedelta
@@ -16,6 +16,11 @@ from .models import Profile
 class SignUpView(CreateView):
     form_class = CustomSignUpForm
     template_name = 'account/signup.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        time_limit = timezone.now() - timedelta(minutes=5)
+        User.objects.filter(is_active=False, otp_created_at__lt=time_limit).delete()
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -55,9 +60,13 @@ class UserActivationView(FormView):
     template_name = 'account/verification.html'
     form_class = VerifyForm
 
-    def form_valid(self, form):
+    def dispatch(self, request, *args, **kwargs):
         self.pk = self.kwargs['pk']
-        self.new_user = User.objects.get(pk=self.pk)
+        self.new_user = get_object_or_404(User, pk=self.pk)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
         code = form.cleaned_data.get('code')
         if code == str(self.new_user.otp) and (timezone.now() - self.new_user.otp_created_at) < timedelta(minutes=5):
             if not self.new_user.is_active:
