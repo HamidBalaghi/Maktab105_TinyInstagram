@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+{% block title %} New Post {% endblock %}
+{% block content %}
+
+    <div class="container mx-auto py-8">
+        <div class="max-w-md mx-auto bg-gray-200 bg-opacity-80 p-8 rounded-md shadow-md">
+            <h2 class="text-2xl font-semibold mb-6">Create a New Post</h2>
+            <form method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="description" name="description" rows="4"
+                              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="image1" class="block text-sm font-medium text-gray-700">Image 1</label>
+                    <input type="file" id="image1" name="image1" class="mt-1 block w-full">
+                </div>
+                <div id="additionalImages"></div>
+                <div class="mt-4">
+                    <button type="button" onclick="addMoreImage()"
+                            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add More
+                        Image
+                    </button>
+                </div>
+                <div class="mt-6">
+                    <button type="submit"
+                            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let imageCounter = 2; // Start with image2
+
+        function addMoreImage() {
+            if (imageCounter <= 4) {
+                const additionalImagesContainer = document.getElementById('additionalImages');
+                const inputField = document.createElement('div');
+                inputField.classList.add('mb-4');
+                inputField.innerHTML = `
+                    <label for="image${imageCounter}" class="block text-sm font-medium text-gray-700">Image ${imageCounter}</label>
+                    <input type="file" id="image${imageCounter}" name="image${imageCounter}" class="mt-1 block w-full">
+                `;
+                additionalImagesContainer.appendChild(inputField);
+                imageCounter++;
+            } else {
+                alert("You can add a maximum of 4 images.");
+            }
+        }
+    </script>
+
+{% endblock %}
+
+
+
+
