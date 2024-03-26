@@ -39,7 +39,7 @@ class CustomUserLoginView(View):
             if user is not None:
                 if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
                     otp_sender(user)
-                return redirect('accounts:activation', pk=user.pk)  ## todo : i will redirect user to profile
+                return redirect('accounts:activation', pk=user.pk)
             else:
                 form.add_error(None, 'Invalid email or password')
         return render(request, self.template_name, {'form': form})
@@ -63,9 +63,11 @@ class UserActivationView(FormView):
             if not self.new_user.is_active:
                 self.new_user.is_active = True
                 self.new_user.save()
+                login(self.request, self.new_user)
                 Profile.objects.create(user=self.new_user)  # Attribution a profile to new user
+                return redirect('accounts:editprofile', pk=self.pk)
             login(self.request, self.new_user)
-            return redirect('accounts:login')  ## todo : i will redirect user to profile
+            return redirect('accounts:profile', pk=self.pk)
         else:
             form.add_error(None, 'Invalid code or OTP expired.')
             return self.form_invalid(form)
@@ -75,7 +77,9 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = 'account/editprofile.html'
     fields = ['image', 'about_me']
-    success_url = reverse_lazy('accounts:test')
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile', kwargs={'pk': self.kwargs['pk']})
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
