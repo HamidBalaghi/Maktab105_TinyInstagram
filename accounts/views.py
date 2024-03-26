@@ -78,5 +78,11 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('accounts:test')
 
 
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = 'profile/profile.html'
+    context_object_name = 'profile'
+
+
 def test(request, *args, **kwargs):
     return render(request, template_name='test/test.html')
