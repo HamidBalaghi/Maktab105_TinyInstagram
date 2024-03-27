@@ -1,6 +1,8 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+
+from config import settings
 from .managers import UserManager
 import random
 
@@ -50,25 +52,34 @@ class Profile(models.Model):
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
 
+    @property
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        else:
+            return settings.STATIC_URL + 'defaultimage/nonp.png'
+
+    @property
     def get_followings(self):
         temp = self.followings.all()
         followers = []
         for user in temp:
-            followers.append(user.following.user)
+            followers.append(user.following)
         return followers
 
     def followings_count(self):
-        return len(self.get_followings())
+        return len(self.get_followings)
 
+    @property
     def get_followers(self):
         temp = self.followers.all()
         followings = []
         for user in temp:
-            followings.append(user.profile.user)
+            followings.append(user.profile)
         return followings
 
     def followers_count(self):
-        return len(self.get_followers())
+        return len(self.get_followers)
 
     def __str__(self):
         return self.user.name
@@ -80,6 +91,9 @@ class Follow(models.Model):
     accepted = models.BooleanField(default=False)
     follow_at = models.DateTimeField(auto_now_add=True)
     close_friend = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('profile', 'following')
 
     def save(self, *args, **kwargs):
         if self.profile == self.following:
