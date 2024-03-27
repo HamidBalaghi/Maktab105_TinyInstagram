@@ -37,12 +37,12 @@
                     </div>
                     <!-- Followers Count -->
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold mb-2"><a href="#">Followers</a></h3>
+                        <h3 class="text-lg font-semibold mb-2"><a href="{% url 'accounts:followers' pk=profile.pk %}">Followers</a></h3>
                         <p class="text-gray-700">{{ profile.followers_count }}</p>
                     </div>
                     <!-- Following Count -->
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold mb-2"><a href="#">Following</a></h3>
+                        <h3 class="text-lg font-semibold mb-2"><a href="{% url 'accounts:following' pk=profile.pk %}">Following</a></h3>
                         <p class="text-gray-700">{{ profile.followings_count }}</p>
                     </div>
                 </div>
