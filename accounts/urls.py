@@ -11,5 +11,7 @@ urlpatterns = [
     path('activation/<int:pk>', views.UserActivationView.as_view(), name='activation'),
     path('editprofile/<int:pk>', views.EditProfileView.as_view(), name='editprofile'),
     path('profile/<int:pk>', views.ProfileView.as_view(), name='profile'),
-    path('test/', views.test, name='test')
+    path('followers/<int:pk>', views.ShowFollowView.as_view(), name='followers'),
+    path('following/<int:pk>', views.ShowFollowView.as_view(), name='following'),
+
 ]
