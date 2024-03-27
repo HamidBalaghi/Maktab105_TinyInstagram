@@ -1,0 +1,28 @@
+<!-- This is the followers.html template -->
+{% extends 'base/base.html' %} <!-- Assuming you have a base template -->
+{% block title %} {% if followers %} Followers {% else %} Following {% endif %} {% endblock %}
+{% block content %}
+    <div class="max-w-md mx-auto mt-10"> <!-- Centered container card occupying smaller width -->
+        <div class="bg-gradient-to-r from-green-100 via-blue-400 to-gray-500 rounded-lg overflow-hidden shadow-md opacity-90">
+            <div class="px-4 py-3 border-b border-gray-200 text-center">
+                {% if followers %}
+                    <h2 class="text-lg font-semibold text-gray-800">Followers</h2>
+                {% else %}
+                    <h2 class="text-lg font-semibold text-gray-800">Following</h2>
+                {% endif %}
+            </div>
+            {% for person in people %}
+                <div class="flex items-center border-b border-gray-200 px-4 py-3">
+                    <img src="{{ person.get_image_url }}" alt="{{ person }}"
+                         class="w-10 h-10 object-cover rounded-full mr-3">
+                    <a href="{% url 'accounts:profile' pk=person.user.id %}"
+                       class="text-gray-800 font-semibold hover:underline">{{ person }}</a>
+                    <button class="ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
+                            style="width: 100px;"> <!-- Adjust the width as needed -->
+                        {% if person in profile.get_followings %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
