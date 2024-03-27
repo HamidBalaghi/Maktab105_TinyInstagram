@@ -97,5 +97,25 @@ class ProfileView(LoginRequiredMixin, DetailView):
     context_object_name = 'profile'
 
 
+class ShowFollowView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = 'profile/follow.html'
+    context_object_name = 'profile'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.profile = get_object_or_404(Profile, user_id=self.kwargs.get('pk'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'followers' in self.request.path:
+            context['people'] = self.profile.get_followers
+            context['followers'] = True
+        elif 'following' in self.request.path:
+            context['people'] = self.profile.get_followings
+        print(context['profile'])
+        return context
+
+
 def test(request, *args, **kwargs):
     return render(request, template_name='test/test.html')
