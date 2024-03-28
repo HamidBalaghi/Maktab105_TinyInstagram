@@ -11,7 +11,7 @@
                 <div class="w-1/2">
                     <div class="relative" style="width: 480px; height: 360px;">
                         <img class="object-cover w-full h-full border border-gray-300 rounded-lg"
-                             style="object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }} {% endif %}"
+                             style="object-fit: cover;" src="{{ profile.get_image_url }}"
                              alt="Profile Image">
                     </div>
                     <!-- You can replace "profile_image.jpg" with the actual path to the profile owner's image -->
@@ -61,7 +61,7 @@
                 <div class="m-2 grid grid-cols-3 gap-4">
                     <!-- Replace the following with Django template rendering -->
                     {% for post in profile.posts.all %}
-                        <a href="#">
+                        <a href="{% url 'post:post' pk=post.pk %}">
                             <div class="w-full relative">
                                 <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
                                      src="{{ post.first_image.image.url }}" alt="Post Image">
