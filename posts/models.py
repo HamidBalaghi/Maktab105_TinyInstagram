@@ -20,6 +20,26 @@ class Post(models.Model):
     def first_image(self):
         return self.images.first()
 
+    def get_comments(self):
+        comments = []
+        for comment in self.comments.filter(is_deleted=False):
+            temp = {}
+            temp['owner'] = comment.profile
+            temp['text'] = comment.comment
+            temp['date'] = comment.created_at
+            temp['parent'] = comment.parent_comment
+            temp['image'] = comment.profile.get_image_url
+            comments.append(temp)
+        return comments
+
+    def get_reactions(self):
+        reaction = {}
+        reaction['likes'] = self.reactions.filter(liked=True)
+        reaction['like_count'] = len(reaction['likes'])
+        reaction['dislikes'] = self.reactions.filter(disliked=True)
+        reaction['dislike_count'] = len(reaction['dislikes'])
+        return reaction
+
     def __str__(self):
         return f'{self.profile} - {self.id}'
 
