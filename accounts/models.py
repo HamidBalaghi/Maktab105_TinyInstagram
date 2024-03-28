@@ -57,7 +57,7 @@ class Profile(models.Model):
         if self.image:
             return self.image.url
         else:
-            return settings.STATIC_URL + 'defaultimage/nonp.png'
+            return settings.STATIC_URL + 'defaultimage/nopo.svg'
 
     @property
     def get_followings(self):
