@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, DetailView
 from .forms import NewPostForm
 from accounts.models import Profile
 from .models import Post, Image
@@ -28,3 +28,16 @@ class NewPostView(FormView):
                 Image.objects.create(post=new_post, image=image)
 
         return super().form_valid(form)
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'post/postdetail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        context['comments'] = post.get_comments()
+        context['reactions'] = post.get_reactions()
+        return context
