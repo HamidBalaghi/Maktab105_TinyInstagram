@@ -3,76 +3,97 @@
 {% block title %}Post details{% endblock %}
 
 {% block content %}
-    <main class="container mx-auto my-8">
-        <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-            <!-- Post image -->
-            <img src="{% static 'path_to_post_image.jpg' %}" class="w-full border border-gray-200 shadow-sm rounded-lg">
-            <!-- Details section -->
-            <div class="p-4">
+
+    <div class="container mx-auto my-8">
+
+        <div class="w-1/2 mx-auto bg-white rounded-xl shadow-md overflow-hidden ">
+            <div class="flex items-center justify-between p-4 ">
                 <!-- Owner image and name -->
-                <div class="flex items-center mb-2">
-                    <img src="{% static 'path_to_owner_image.jpg' %}" class="w-10 h-10 rounded-full">
-                    <span class="ml-2">{{ post.owner_name }}</span>
+                <div class="flex items-center">
+                    <img src="{{ post.profile.get_image_url }}" class="w-8 h-8 rounded-full">
+                    <span class="ml-2"><a href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
                 </div>
                 <!-- Publish date -->
-                <div class="text-sm text-gray-500 mb-4">{{ post.publish_date }}</div>
-                <!-- Like and dislike buttons with counts -->
-                <div class="flex items-center mb-4">
-                    <button class="flex items-center mr-4">
-                        <span class="mr-1">👍</span> Like ({{ post.likes_count }})
-                    </button>
-                    <button class="flex items-center">
-                        <span class="mr-1">👎</span> Dislike ({{ post.dislikes_count }})
-                    </button>
-                </div>
-                <!-- Description -->
-                <div class="italic mb-4">{{ post.description }}</div>
-                <!-- Comments section -->
-                <div class="p-4">
-                    <h2 class="text-lg font-semibold mb-2">Comments</h2>
-                    <ul>
-                        {% for comment in post.comments.all %}
-                            <li>
-                                <div class="flex justify-between items-start text-justify mt-4">
-                                    <!-- Left div for commenter's image -->
-                                    <div class="w-10 h-10">
-                                        <img src="{{ comment.commenter.image.url }}"
-                                             alt="{{ comment.commenter.username }}'s profile picture"
-                                             class="w-full h-full rounded-full">
-                                    </div>
-                                    <!-- Right div for comment content and reply button -->
-                                    <div class="w-5/6 ml-4">
-                                        <!-- Top div for commenter's name and time of comment -->
-                                        <div class="flex justify-between items-center mb-1">
-                                            <div>
-                                                <a href="{{ comment.commenter.profile_url }}"
-                                                   class="text-blue-500">{{ comment.commenter.username }}</a>
-                                            </div>
-                                            <div class="text-sm text-gray-500">{{ comment.created_at }}</div>
-                                        </div>
-                                        <!-- Middle div for comment content -->
-                                        <div class="mt-1">
-                                            <p>{{ comment.content }}</p>
-                                        </div>
-                                        <!-- Bottom div for 'Reply' button -->
-                                        <div class="mt-2">
-                                            <button class="text-sm text-gray-500">Reply</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <!-- Text box and 'Post Comment' button for new comment -->
-                <div class="mt-4 flex justify-between items-center">
-                    <textarea class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
-                              placeholder="Write your comment here..."></textarea>
-                    <button class="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Post Comment
-                    </button>
+                <div class="text-sm text-gray-500">{{ post.publish_at }}</div>
+            </div>
+            <!-- Post image -->
+            <div class="flex flex-col">
+                {% for img in post.get_images %}
+                    <img src="{{ img.image.url }}" class="rounded-lg border border-gray-400 shadow-lg m-2">
+                {% endfor %}
+            </div>
+
+
+            <div class="p-4">
+                <!-- Like and dislike buttons with emoji and counts -->
+                <div class="flex items-center">
+                    <button class="flex items-center mr-1 ml-6">
+                        <!-- Like button with emoji -->
+                        <span class="mr-5">👍</span>
+                    </button> <span class="mr-5"><a href="#">{{ reactions.like_count }}</a></span>
+                    ||
+                    <button class="flex items-center mr-1 ml-6">
+                        <!-- Dislike button with emoji -->
+                        <span class="mr-4">👎</span>
+                    </button> <span><a href="#">{{ reactions.dislike_count }}</a></span>
                 </div>
             </div>
+            <!-- Post description -->
+            <div class="p-4 italic">
+                <p>{{ post.description }}</p>
+            </div>
+
+            <!-- Comments section -->
+            <div class="p-4">
+                <h2 class="text-lg font-semibold">Comments</h2>
+                <ul>
+                    {% for comment in comments %}
+                        <li>
+                            <div class="flex justify-between items-start text-justify mt-4">
+                                <!-- Left div for commenter's image -->
+                                <div class="w-10 h-10">
+                                    <img src="{{ comment.image }}" class="w-full h-full rounded-full">
+                                </div>
+                                <!-- Right div for comment content and reply button -->
+                                <div class="w-5/6 ml-4">
+                                    <!-- Top div for commenter's name -->
+                                    <div class="flex justify-between ">
+                                        <div><a href="{% url 'accounts:profile' pk=comment.owner.pk %}"
+                                                class="text-blue-500">{{ comment.owner }}</a></div>
+                                        <div class="text-sm text-gray-500">{{ comment.date }}</div>
+                                    </div>
+                                    <!-- Middle div for comment content -->
+                                    <div class="mt-1">
+                                        <p class="pl-3">{% if comment.parent %}
+                                            <span class="italic">@{{ comment.parent.profile }}</span>   {% endif %} {{ comment.text }}
+                                        </p>
+                                    </div>
+                                    <!-- Bottom div for 'Reply' button -->
+                                    <div class="mt-1">
+                                        <button class="text-sm text-gray-500">Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <!-- Text box and 'Post Comment' button for new comment -->
+            <div class="mt-4 p-2 flex justify-between items-center">
+                <textarea class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
+                          placeholder="Write your comment here..."></textarea>
+                <button class="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Post Comment</button>
+            </div>
+
         </div>
-    </main>
+    </div>
+
+
 {% endblock %}
+
+
+
 
