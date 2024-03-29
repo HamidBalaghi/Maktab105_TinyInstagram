@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixin import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, UpdateView, DetailView
 from .forms import CustomSignUpForm, CustomUserLoginForm, VerifyForm
@@ -45,6 +46,9 @@ class CustomUserLoginView(View):
                 if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
                     otp_sender(user)
                 return redirect('accounts:activation', pk=user.pk)
+                ##for test
+                # login(request, user)
+                # return redirect('accounts:profile', pk=user.pk)
             else:
                 form.add_error(None, 'Invalid email or password')
         return render(request, self.template_name, {'form': form})
@@ -96,6 +100,16 @@ class ProfileView(LoginRequiredMixin, DetailView):
     template_name = 'profile/profile.html'
     context_object_name = 'profile'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(self.request.user.profile.get_followings)
+        if self.request.user.profile == self.get_object():
+            context['owner'] = True
+        else:
+            if self.get_object() in self.request.user.profile.get_followings:
+                context['is_following'] = True
+        return context
+
 
 class ShowFollowView(LoginRequiredMixin, DetailView):
     model = Profile
@@ -108,12 +122,15 @@ class ShowFollowView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        self.login_user = self.request.user.profile
+
         if 'followers' in self.request.path:
             context['people'] = self.profile.get_followers
             context['followers'] = True
         elif 'following' in self.request.path:
             context['people'] = self.profile.get_followings
-        print(context['profile'])
+        context['user_following'] = self.login_user.get_followings
+        context['user'] = self.login_user
         return context
 
 
