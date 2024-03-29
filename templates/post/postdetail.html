@@ -11,7 +11,7 @@
                 <!-- Owner image and name -->
                 <div class="flex items-center">
                     <img src="{{ post.profile.get_image_url }}" class="w-8 h-8 rounded-full">
-                    <span class="ml-2"><a href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
+                    <span class="ml-2 hover:underline"><a href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
                 </div>
                 <!-- Publish date -->
                 <div class="text-sm text-gray-500">{{ post.publish_at }}</div>
@@ -45,7 +45,7 @@
 
             <!-- Comments section -->
             <div class="p-4">
-                <h2 class="text-lg font-semibold">Comments &#x2661; &#x2764; &#x1F44E; &#x</h2>
+                <h2 class="text-lg font-semibold">Comments</h2>
                 <ul>
                     {% for comment in comments %}
                         <li>
@@ -59,7 +59,7 @@
                                     <!-- Top div for commenter's name -->
                                     <div class="flex justify-between ">
                                         <div><a href="{% url 'accounts:profile' pk=comment.owner.pk %}"
-                                                class="text-blue-500">{{ comment.owner }}</a></div>
+                                                class="text-blue-500 hover:underline">{{ comment.owner }}</a></div>
                                         <div class="text-sm text-gray-500">{{ comment.date }}</div>
                                     </div>
                                     <!-- Middle div for comment content -->
