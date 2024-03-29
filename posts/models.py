@@ -34,10 +34,15 @@ class Post(models.Model):
 
     def get_reactions(self):
         reaction = {}
-        reaction['likes'] = self.reactions.filter(liked=True)
-        reaction['like_count'] = len(reaction['likes'])
-        reaction['dislikes'] = self.reactions.filter(disliked=True)
-        reaction['dislike_count'] = len(reaction['dislikes'])
+
+        likes = self.reactions.filter(liked=True).select_related('profile')
+        reaction['likes'] = [like.profile for like in likes]
+        reaction['like_count'] = len(likes)
+
+        dislikes = self.reactions.filter(disliked=True).select_related('profile')
+        reaction['dislikes'] = [dislike.profile for dislike in dislikes]
+        reaction['dislike_count'] = len(dislikes)
+
         return reaction
 
     def __str__(self):

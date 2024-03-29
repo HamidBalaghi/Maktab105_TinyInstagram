@@ -45,7 +45,7 @@
 
             <!-- Comments section -->
             <div class="p-4">
-                <h2 class="text-lg font-semibold">Comments</h2>
+                <h2 class="text-lg font-semibold">Comments &#x2661; &#x2764; &#x1F44E; &#x</h2>
                 <ul>
                     {% for comment in comments %}
                         <li>
@@ -65,7 +65,7 @@
                                     <!-- Middle div for comment content -->
                                     <div class="mt-1">
                                         <p class="pl-3">{% if comment.parent %}
-                                            <span class="italic">@{{ comment.parent.profile }}</span>   {% endif %} {{ comment.text }}
+                                            <span class="italic underline text-gray-800">@{{ comment.parent.profile }}</span>   {% endif %} {{ comment.text }}
                                         </p>
                                     </div>
                                     <!-- Bottom div for 'Reply' button -->
