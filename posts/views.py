@@ -1,18 +1,22 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView, DetailView
 from .forms import NewPostForm
 from accounts.models import Profile
 from .models import Post, Image
+from core.mixin import LoginRequiredMixin
 
 
-class NewPostView(FormView):
+class NewPostView(LoginRequiredMixin, FormView):
     form_class = NewPostForm
     template_name = 'post/newpost.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.pk = self.kwargs['pk']
         self.owner = get_object_or_404(Profile, pk=self.pk)
+        if request.user.is_authenticated and self.owner != request.user.profile:
+            raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -30,7 +34,7 @@ class NewPostView(FormView):
         return super().form_valid(form)
 
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post/postdetail.html'
     context_object_name = 'post'
