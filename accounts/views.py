@@ -1,7 +1,9 @@
 # from django.contrib.auth.mixins import LoginRequiredMixin
-from core.mixin import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
+from core.mixin import LoginRequiredMixin, ProfilePermissionMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, UpdateView, DetailView
+from django.views.generic import CreateView, FormView, UpdateView, DetailView, TemplateView
 from .forms import CustomSignUpForm, CustomUserLoginForm, VerifyForm
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -43,12 +45,12 @@ class CustomUserLoginView(View):
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
-                    otp_sender(user)
-                return redirect('accounts:activation', pk=user.pk)
+                # if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
+                #     otp_sender(user)
+                # return redirect('accounts:activation', pk=user.pk)
                 ##for test
-                # login(request, user)
-                # return redirect('accounts:profile', pk=user.pk)
+                login(request, user)
+                return redirect('accounts:profile', pk=user.pk)
             else:
                 form.add_error(None, 'Invalid email or password')
         return render(request, self.template_name, {'form': form})
@@ -91,24 +93,22 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'account/editprofile.html'
     fields = ['image', 'about_me', 'is_active', 'is_public']
 
+    def dispatch(self, request, *args, **kwargs):
+        if isinstance(request.user, AnonymousUser):
+            return redirect('accounts:login')
+
+        elif request.user.profile != self.get_object():
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy('accounts:profile', kwargs={'pk': self.kwargs['pk']})
 
 
-class ProfileView(LoginRequiredMixin, DetailView):
+class ProfileView(LoginRequiredMixin, ProfilePermissionMixin, DetailView):
     model = Profile
     template_name = 'profile/profile.html'
     context_object_name = 'profile'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(self.request.user.profile.get_followings)
-        if self.request.user.profile == self.get_object():
-            context['owner'] = True
-        else:
-            if self.get_object() in self.request.user.profile.get_followings:
-                context['is_following'] = True
-        return context
 
 
 class ShowFollowView(LoginRequiredMixin, DetailView):
@@ -118,6 +118,13 @@ class ShowFollowView(LoginRequiredMixin, DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.profile = get_object_or_404(Profile, user_id=self.kwargs.get('pk'))
+        if not self.profile.is_active and self.profile != self.request.user:
+            raise PermissionDenied
+        elif isinstance(request.user, AnonymousUser):
+            return redirect('accounts:login')
+        elif request.user.profile != self.profile and request.user.profile not in self.profile.get_followers and not self.profile.is_public:
+            raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -125,10 +132,18 @@ class ShowFollowView(LoginRequiredMixin, DetailView):
         self.login_user = self.request.user.profile
 
         if 'followers' in self.request.path:
-            context['people'] = self.profile.get_followers
+            context['people'] = []
+            temp = self.profile.get_followers
+            for follower in temp:
+                if follower.is_active:
+                    context['people'].append(follower)
             context['followers'] = True
         elif 'following' in self.request.path:
-            context['people'] = self.profile.get_followings
+            context['people'] = []
+            temp = self.profile.get_followings
+            for following in temp:
+                if following.is_active:
+                    context['people'].append(following)
         context['user_following'] = self.login_user.get_followings
         context['user'] = self.login_user
         return context
