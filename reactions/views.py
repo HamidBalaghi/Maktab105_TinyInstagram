@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from posts.models import Post
 from .models import Like
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -27,21 +28,27 @@ class LikeView(View):
             reaction = Like.objects.get(profile=request.user.profile, post=post)
             if ('/like/' in request.path and reaction.liked) or ('/dislike/' in request.path and reaction.disliked):
                 reaction.delete()
+                return JsonResponse({'response': 'no_reaction'})
+                # return JsonResponse({'response': 'no_reaction', 'redirecturl':f'/post/{pk}'})
             elif '/like/' in request.path:
                 reaction.liked = True
                 reaction.disliked = False
                 reaction.save()
+                return JsonResponse({'response': 'liked'})
             else:
                 reaction.liked = False
                 reaction.disliked = True
                 reaction.save()
+                return JsonResponse({'response': 'disliked'})
 
         except Like.DoesNotExist:
             reaction = Like(profile=request.user.profile, post=post)
             if '/like/' in request.path:
                 reaction.liked = True
+                reaction.save()
+                return JsonResponse({'response': 'new_liked'})
             else:
                 reaction.disliked = True
-            reaction.save()
+                reaction.save()
+                return JsonResponse({'response': 'new_disliked'})
 
-        return redirect('post:post', pk=post.pk)
