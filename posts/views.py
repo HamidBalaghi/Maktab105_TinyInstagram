@@ -61,4 +61,6 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         post = self.get_object()
         context['comments'] = post.get_comments()
         context['reactions'] = post.get_reactions()
+        like_reaction = post.user_reaction(self.request.user.profile)
+        context[like_reaction] = True
         return context
