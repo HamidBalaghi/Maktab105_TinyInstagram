@@ -1,9 +1,11 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+
+from accounts.models import Profile, Follow
 from posts.models import Post
 from .models import Like
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 
 
 # Create your views here.
@@ -52,3 +54,25 @@ class LikeView(View):
                 reaction.save()
                 return JsonResponse({'response': 'new_disliked'})
 
+
+class FollowView(View):
+    def dispatch(self, request, *args, **kwargs):
+        self.profile = get_object_or_404(Profile, pk=kwargs['pk'])
+        if not request.user.is_authenticated or request.user.is_anonymous:
+            return redirect('accounts:login')
+
+        if not request.user.profile.is_active or not self.profile.is_active or request.user.profile == self.profile:
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if '/follow/' in request.path:
+            follow, created = Follow.objects.get_or_create(profile=request.user.profile, following=self.profile)
+            return JsonResponse({'response': 'followed'})
+        else:
+            try:
+                Follow.objects.get(profile=request.user.profile, following=self.profile).delete()
+                return JsonResponse({'response': 'unfollowed'})
+            except:
+                raise PermissionDenied
