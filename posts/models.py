@@ -45,6 +45,16 @@ class Post(models.Model):
 
         return reaction
 
+    def user_reaction(self, user):
+        try:
+            like_reaction = self.reactions.get(profile=user)
+            if like_reaction.liked:
+                return 'liked'
+            elif like_reaction.disliked:
+                return 'disliked'
+        except:
+            return 'no_reaction'
+
     def __str__(self):
         return f'{self.profile} - {self.id}'
 
