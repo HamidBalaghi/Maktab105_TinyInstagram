@@ -44,11 +44,14 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         self.owner = self.get_object().profile
         if isinstance(request.user, AnonymousUser):
             return redirect('accounts:login')
-        elif (not self.get_object().publishable or
-              (request.user != self.owner and not self.get_object().is_active) or
-              not self.owner.is_active):
+        elif (not self.get_object().publishable
+              or (request.user != self.owner
+                  and not self.get_object().is_active)
+              or not self.owner.is_active):
             raise PermissionDenied
-        elif request.user.profile not in self.owner.get_followers and not self.owner.is_public and request.user != self.owner:
+        elif (request.user.profile not in self.owner.get_followers
+              and not self.owner.is_public
+              and request.user.profile != self.owner):
             raise PermissionDenied
 
         return super().dispatch(request, *args, **kwargs)
