@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-
+{% load static %}
 {% block title %}Post details{% endblock %}
 
 {% block content %}
@@ -11,7 +11,8 @@
                 <!-- Owner image and name -->
                 <div class="flex items-center">
                     <img src="{{ post.profile.get_image_url }}" class="w-8 h-8 rounded-full">
-                    <span class="ml-2 hover:underline"><a href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
+                    <span class="ml-2 hover:underline"><a
+                            href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
                 </div>
                 <!-- Publish date -->
                 <div class="text-sm text-gray-500">{{ post.publish_at }}</div>
@@ -26,17 +27,56 @@
 
             <div class="p-4">
                 <!-- Like and dislike buttons with emoji and counts -->
-                <div class="flex items-center">
-                    <button class="flex items-center mr-1 ml-6">
-                        <!-- Like button with emoji -->
-                        <span class="mr-5">👍</span>
-                    </button> <span class="mr-5"><a href="#">{{ reactions.like_count }}</a></span>
-                    ||
-                    <button class="flex items-center mr-1 ml-6">
-                        <!-- Dislike button with emoji -->
-                        <span class="mr-4">👎</span>
-                    </button> <span><a href="#">{{ reactions.dislike_count }}</a></span>
-                </div>
+                {% if liked %}
+                    <div class="flex items-center">
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Like button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/liked.svg' %}" width="20px"
+                                                    alt="Like Button"></span>
+                        </a>
+                        <span class="mr-5"><a href="#">{{ reactions.like_count }}</a></span>
+                        ||
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Dislike button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/unliked.jpg' %}" width="20px"
+                                                    alt="Dislike Button"></span>
+                        </a>
+                        <span><a href="#">{{ reactions.dislike_count }}</a></span>
+                    </div>
+                {% elif disliked %}
+                    <div class="flex items-center">
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Like button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/like.svg' %}" width="20px"
+                                                    alt="Like Button"></span>
+                        </a>
+                        <span class="mr-5"><a href="#">{{ reactions.like_count }}</a></span>
+                        ||
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Dislike button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/unliked.jpg' %}" width="20px"
+                                                    alt="Dislike Button"></span>
+                        </a>
+                        <span><a href="#">{{ reactions.dislike_count }}</a></span>
+                    </div>
+                {% else %}
+                    <div class="flex items-center">
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Like button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/like.svg' %}" width="20px"
+                                                    alt="Like Button"></span>
+                        </a>
+                        <span class="mr-5"><a href="#">{{ reactions.like_count }}</a></span>
+                        ||
+                        <a href="#" class="flex items-center mr-1 ml-6">
+                            <!-- Dislike button with emoji -->
+                            <span class="mr-4"><img src="{% static 'like/unlike.jpg' %}" width="20px"
+                                                    alt="Dislike Button"></span>
+                        </a>
+                        <span><a href="#">{{ reactions.dislike_count }}</a></span>
+                    </div>
+                {% endif %}
+
             </div>
             <!-- Post description -->
             <div class="p-4 italic">
