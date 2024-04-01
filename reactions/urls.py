@@ -8,4 +8,5 @@ urlpatterns = [
     path('dislike/post/<int:pk>', views.LikeView.as_view(), name='dislike'),
     path('follow/<int:pk>', views.FollowView.as_view(), name='follow_user'),
     path('unfollow/<int:pk>', views.FollowView.as_view(), name='unfollow_user'),
+    path('delete_comment/<int:pk>', views.DeleteComment.as_view(), name='delete_comment'),
 ]
