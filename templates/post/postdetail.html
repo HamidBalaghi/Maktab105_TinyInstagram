@@ -101,26 +101,29 @@
                                 <!-- Right div for comment content and reply button -->
                                 <div class="w-5/6 ml-4">
                                     <!-- Top div for commenter's name -->
-                                    <div class="flex justify-between ">
+                                    <div class="flex justify-between">
                                         <div><a href="{% url 'accounts:profile' pk=comment.owner.pk %}"
                                                 class="text-blue-500 hover:underline">{{ comment.owner }}</a></div>
                                         <div class="text-sm text-gray-500">{{ comment.date }}</div>
                                     </div>
                                     <!-- Middle div for comment content -->
                                     <div class="mt-1">
-                                        <p class="pl-3">{% if comment.parent %}
-                                            <span class="italic underline text-gray-800">@{{ comment.parent.profile }}</span>   {% endif %} {{ comment.text }}
+                                        <p class="pl-3">
+                                            {% if comment.parent %}
+                                                <span class="italic underline text-gray-800">@{{ comment.parent.profile }}</span>
+                                            {% endif %}
+                                            {{ comment.text }}
                                         </p>
                                     </div>
                                     <!-- Bottom div for 'Reply' button -->
                                     <div class="mt-1">
-                                        <button class="text-sm text-gray-500 " value="{{ comment.comment_id }}">Reply</button>
+                                        <button class="text-sm text-gray-500 reply-btn"
+                                                data-comment-id="{{ comment.comment_id }}">Reply
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </li>
-
-
                     {% endfor %}
                 </ul>
 
@@ -130,7 +133,8 @@
             <form action="" method="post" class="mt-4 p-2" id="commentForm">
                 {% csrf_token %}
                 <!-- Input field for parent comment ID -->
-                <input type="hidden" name="parent" value="None"> <!-- You can set default value if needed -->
+                <input type="hidden" name="parent" id="parentInput" value="None">
+                <!-- You can set default value if needed -->
                 <div class="flex justify-between items-center">
         <textarea name="text" class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
                   placeholder="Write your comment here..."></textarea>
@@ -194,6 +198,19 @@
             });
         }
 
+    </script>
+
+    <script>
+        // Add event listener to all reply buttons
+        document.querySelectorAll('.reply-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                // Get the value of the clicked button
+                const commentId = this.getAttribute('data-comment-id');
+                // Copy the value to the hidden input field for parent comment ID
+                document.getElementById('parentInput').value = commentId;
+                // You can perform any other actions you want with the value here
+            });
+        });
     </script>
 
 {% endblock %}
