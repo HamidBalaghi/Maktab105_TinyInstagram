@@ -22,7 +22,8 @@
                     <!-- Profile Owner's Name -->
                     <h2 class="text-xl font-semibold mb-2">{{ profile.user.name }}</h2>
                     <!-- Profile Owner's Bio with text alignment justified and italic -->
-                    <p class="text-gray-700 text-justify italic">{% if profile.about_me %} {{ profile.about_me }} {% endif %}</p>
+                    <p class="text-gray-700 text-justify italic">{% if profile.about_me %}
+                        {{ profile.about_me }} {% endif %}</p>
                     <!-- #new change: Added 'italic' class to make the bio text italic -->
                 </div>
             </div>
@@ -37,13 +38,17 @@
                     </div>
                     <!-- Followers Count -->
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold mb-2"><a class="{% if not has_perm %} pointer-events-none {% endif %}" href="{% url 'accounts:followers' pk=profile.pk %}">Followers</a>
+                        <h3 class="text-lg font-semibold mb-2"><a
+                                class="{% if not has_perm %} pointer-events-none {% endif %}"
+                                href="{% url 'accounts:followers' pk=profile.pk %}">Followers</a>
                         </h3>
-                        <p class="text-gray-700">{{ followers_count }}</p>
+                        <p id="followers_count" class="text-gray-700">{{ followers_count }}</p>
                     </div>
                     <!-- Following Count -->
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold mb-2"><a class="{% if not has_perm %} pointer-events-none {% endif %}" href="{% url 'accounts:following' pk=profile.pk %}">Following</a>
+                        <h3 class="text-lg font-semibold mb-2"><a
+                                class="{% if not has_perm %} pointer-events-none {% endif %}"
+                                href="{% url 'accounts:following' pk=profile.pk %}">Following</a>
                         </h3>
                         <p class="text-gray-700">{{ followings_count }}</p>
                     </div>
@@ -59,13 +64,23 @@
                     <a href="{% url 'accounts:editprofile' pk=profile.pk %}"
                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"  {% if not owner %}
                        style="display: none;" {% endif %}>Edit Profile</a>
-                    <a href="#"
-                       class="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-500 hover:to-yellow-700 text-white font-bold py-2 px-6 rounded mr-8"
-                            {% if owner %}
-                       style="display: none;"
-                            {% endif %}>
-                        {% if is_following %} Unfollow {% else %} Follow {% endif %}
-                    </a>
+
+                    {% if is_following %}
+                        <a onclick="unfollow(this, '{{ profile.pk }}')"
+                           class="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-500 hover:to-yellow-700 text-white font-bold py-2 px-6 rounded mr-8"
+                                {% if owner %}
+                           style="display: none;"
+                                {% endif %}>Unfollow
+                        </a>
+                    {% else %}
+                        <a onclick="follow(this, '{{ profile.pk }}')"
+                           class="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-500 hover:to-yellow-700 text-white font-bold py-2 px-6 rounded mr-8"
+                                {% if owner %}
+                           style="display: none;"
+                                {% endif %}>Follow
+                        </a>
+                    {% endif %}
+
                 </div>
 
                 <!-- Posts Section -->
@@ -74,7 +89,7 @@
                 </div>
                 <div class="m-2 grid grid-cols-3 gap-4">
                     <!-- Replace the following with Django template rendering -->
-                    {% for post in posts%}
+                    {% for post in posts %}
                         <a href="{% url 'post:post' pk=post.pk %}">
                             <div class="w-full relative">
                                 <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
@@ -86,10 +101,29 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function follow(button, pk) {
+            var followers_count = document.getElementById('followers_count');
+            $.get(`/follow/${pk}`).then(response => {
+                if (response['response'] === 'followed') {
+                    button.innerText = 'Unfollow';
+                    button.setAttribute('onclick', `unfollow(this, '${pk}')`);
+                    followers_count.innerText = Number(followers_count.innerText) + 1;
+                }
+            });
+        }
 
-
-
-
-
+        function unfollow(button, pk) {
+            var followers_count = document.getElementById('followers_count');
+            $.get(`/unfollow/${pk}`).then(response => {
+                if (response['response'] === 'unfollowed') {
+                    button.innerText = 'Follow';
+                    button.setAttribute('onclick', `follow(this, '${pk}')`);
+                    followers_count.innerText = Number(followers_count.innerText) - 1;
+                }
+            });
+        }
+    </script>
 
 {% endblock %}
