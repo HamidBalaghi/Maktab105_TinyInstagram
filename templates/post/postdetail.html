@@ -114,7 +114,7 @@
                                     </div>
                                     <!-- Bottom div for 'Reply' button -->
                                     <div class="mt-1">
-                                        <button class="text-sm text-gray-500 ">Reply</button>
+                                        <button class="text-sm text-gray-500 " value="{{ comment.comment_id }}">Reply</button>
                                     </div>
                                 </div>
                             </div>
@@ -126,11 +126,21 @@
 
             </div>
             <!-- Text box and 'Post Comment' button for new comment -->
-            <div class="mt-4 p-2 flex justify-between items-center">
-                <textarea class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
-                          placeholder="Write your comment here..."></textarea>
-                <button class="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Post Comment</button>
-            </div>
+            <!-- Text box and 'Post Comment' button for new comment -->
+            <form action="" method="post" class="mt-4 p-2" id="commentForm">
+                {% csrf_token %}
+                <!-- Input field for parent comment ID -->
+                <input type="hidden" name="parent" value="None"> <!-- You can set default value if needed -->
+                <div class="flex justify-between items-center">
+        <textarea name="text" class="w-3/4 h-20 border border-gray-200 shadow-sm rounded-lg p-2"
+                  placeholder="Write your comment here..."></textarea>
+                    <button type="submit"
+                            class="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                        Post Comment
+                    </button>
+                </div>
+            </form>
+
 
         </div>
     </div>
@@ -183,7 +193,9 @@
                 }
             });
         }
+
     </script>
+
 {% endblock %}
 
 
