@@ -86,7 +86,6 @@
             <div class="p-4 italic">
                 <p>{{ post.description }}</p>
             </div>
-
             <!-- Comments section -->
             <div class="p-4">
                 <h2 class="text-lg font-semibold">Comments</h2>
@@ -98,12 +97,14 @@
                                 <div class="w-10 h-10">
                                     <img src="{{ comment.image }}" class="w-full h-full rounded-full">
                                 </div>
-                                <!-- Right div for comment content and reply button -->
+                                <!-- Right div for comment content and buttons -->
                                 <div class="w-5/6 ml-4">
-                                    <!-- Top div for commenter's name -->
+                                    <!-- Top div for commenter's name and date -->
                                     <div class="flex justify-between">
-                                        <div><a href="{% url 'accounts:profile' pk=comment.owner.pk %}"
-                                                class="text-blue-500 hover:underline">{{ comment.owner }}</a></div>
+                                        <div>
+                                            <a href="{% url 'accounts:profile' pk=comment.owner.pk %}"
+                                               class="text-blue-500 hover:underline">{{ comment.owner }}</a>
+                                        </div>
                                         <div class="text-sm text-gray-500">{{ comment.date }}</div>
                                     </div>
                                     <!-- Middle div for comment content -->
@@ -115,18 +116,25 @@
                                             {{ comment.text }}
                                         </p>
                                     </div>
-                                    <!-- Bottom div for 'Reply' button -->
-                                    <div class="mt-1">
-                                        <button class="text-sm text-gray-500 reply-btn"
+                                    <!-- Bottom div for buttons -->
+                                    <div class="mt-1 flex items-center">
+                                        <button class="text-sm text-gray-500 mr-2 reply-btn"
                                                 data-comment-id="{{ comment.comment_id }}">Reply
+
                                         </button>
+                                        {% if comment.owner == user or user == post_owner %}
+                                            <!-- Add the Delete button here -->
+                                            <a href="{% url 'reactions:delete_comment' pk=comment.comment_id %}"
+                                               class="text-sm text-red-500 delete-btn">Delete
+                                            </a>
+
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </li>
                     {% endfor %}
                 </ul>
-
             </div>
             <!-- Text box and 'Post Comment' button for new comment -->
             <!-- Text box and 'Post Comment' button for new comment -->
