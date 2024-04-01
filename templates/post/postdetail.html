@@ -117,19 +117,18 @@
                                         </p>
                                     </div>
                                     <!-- Bottom div for buttons -->
-                                    <div class="mt-1 flex items-center">
-                                        <button class="text-sm text-gray-500 mr-2 reply-btn"
-                                                data-comment-id="{{ comment.comment_id }}">Reply
-
-                                        </button>
+                                    <div class="mt-1 flex items-center justify-end w-full">
+                                        <div class="flex-grow"></div> <!-- This will push the buttons to the right -->
                                         {% if comment.owner == user or user == post_owner %}
-                                            <!-- Add the Delete button here -->
                                             <a href="{% url 'reactions:delete_comment' pk=comment.comment_id %}"
-                                               class="text-sm text-red-500 delete-btn">Delete
-                                            </a>
-
+                                               class="text-sm text-red-500 delete-btn ml-4 mb-4">Delete</a>
                                         {% endif %}
+                                        <button class="text-sm text-gray-500 mr-2 reply-btn ml-4 mb-4"
+                                                data-comment-id="{{ comment.comment_id }}">Reply
+                                        </button>
+
                                     </div>
+
                                 </div>
                             </div>
                         </li>
