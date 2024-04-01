@@ -29,6 +29,7 @@ class Post(models.Model):
             temp['date'] = comment.created_at
             temp['parent'] = comment.parent_comment
             temp['image'] = comment.profile.get_image_url
+            temp['comment_id'] = comment.pk
             comments.append(temp)
         return comments
 
