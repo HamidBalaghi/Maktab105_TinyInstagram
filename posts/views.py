@@ -74,8 +74,15 @@ class PostDetailView(LoginRequiredMixin, DetailView):
             text = comment_form.cleaned_data['text']
             parent_id = comment_form.cleaned_data['parent']
 
+            ## new comment
             new_comment = Comment(profile=request.user.profile, post=self.get_object(), comment=text)
             if parent_id == 'None':
+                ## new comment without reply
+                new_comment.save()
+            else:
+                ## new comment with reply
+                parent = Comment.objects.get(pk=parent_id)
+                new_comment.parent_comment = parent
                 new_comment.save()
 
         else:
