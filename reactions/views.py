@@ -1,11 +1,10 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-
 from accounts.models import Profile, Follow
 from posts.models import Post
-from .models import Like
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from .models import Like, Comment
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -31,7 +30,6 @@ class LikeView(View):
             if ('/like/' in request.path and reaction.liked) or ('/dislike/' in request.path and reaction.disliked):
                 reaction.delete()
                 return JsonResponse({'response': 'no_reaction'})
-                # return JsonResponse({'response': 'no_reaction', 'redirecturl':f'/post/{pk}'})
             elif '/like/' in request.path:
                 reaction.liked = True
                 reaction.disliked = False
@@ -76,3 +74,26 @@ class FollowView(View):
                 return JsonResponse({'response': 'unfollowed'})
             except:
                 raise PermissionDenied
+
+
+class DeleteComment(View):
+    def dispatch(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs['pk'])
+
+        if not request.user.is_authenticated or request.user.is_anonymous:
+            return redirect('accounts:login')
+        post_owner = comment.post.profile
+        if not request.user.profile.is_active or not post_owner.is_active:
+            raise PermissionDenied
+
+        commenter = comment.profile
+        if request.user.profile != commenter and request.user.profile != post_owner:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        post_id = comment.post.pk
+        comment.is_deleted = True
+        comment.save()
+        return redirect('post:post', pk=post_id)
