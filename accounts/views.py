@@ -45,12 +45,12 @@ class CustomUserLoginView(View):
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                # if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
-                #     otp_sender(user)
-                # return redirect('accounts:activation', pk=user.pk)
+                if (timezone.now() - user.otp_created_at) > timedelta(minutes=5):
+                    otp_sender(user)
+                return redirect('accounts:activation', pk=user.pk)
                 ##for test
-                login(request, user)
-                return redirect('accounts:profile', pk=user.pk)
+                # login(request, user)
+                # return redirect('accounts:profile', pk=user.pk)
             else:
                 form.add_error(None, 'Invalid email or password')
         return render(request, self.template_name, {'form': form})
@@ -82,7 +82,7 @@ class UserActivationView(FormView):
                 Profile.objects.create(user=self.new_user)  # Attribution a profile to new user
                 return redirect('accounts:editprofile', pk=self.pk)
             login(self.request, self.new_user)
-            return redirect('accounts:profile', pk=self.pk)
+            return redirect('post:home')
         else:
             form.add_error(None, 'Invalid code or OTP expired.')
             return self.form_invalid(form)
