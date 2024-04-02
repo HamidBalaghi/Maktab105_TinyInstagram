@@ -6,14 +6,14 @@ from django.views.generic import FormView, DetailView, ListView
 from .forms import NewPostForm
 from accounts.models import Profile
 from .models import Post, Image
-from core.mixin import LoginRequiredMixin
+from core.mixin import LoginRequiredMixin, NavbarMixin
 from reactions.forms import NewCommentForm
 from reactions.models import Comment
 
 from django.contrib.auth import get_user_model
 
 
-class NewPostView(LoginRequiredMixin, FormView):
+class NewPostView(LoginRequiredMixin, NavbarMixin, FormView):
     form_class = NewPostForm
     template_name = 'post/newpost.html'
 
@@ -39,7 +39,7 @@ class NewPostView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, NavbarMixin, DetailView):
     model = Post
     template_name = 'post/postdetail.html'
     context_object_name = 'post'
@@ -95,7 +95,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         return redirect('post:post', pk=self.kwargs['pk'])
 
 
-class HomeView(ListView):
+class HomeView(LoginRequiredMixin, NavbarMixin, ListView):
     model = Post
     template_name = 'home/home.html'
 
