@@ -117,7 +117,7 @@
                                         </p>
                                     </div>
                                     <!-- Bottom div for buttons -->
-                                    <div class="mt-1 flex items-center justify-end w-full">
+                                    <div class="mt-0 flex items-center justify-end w-full">
                                         <div class="flex-grow"></div> <!-- This will push the buttons to the right -->
                                         {% if comment.owner == user or user == post_owner %}
                                             <a href="{% url 'reactions:delete_comment' pk=comment.comment_id %}"
