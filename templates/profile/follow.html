@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 
-{% block title %} {% if followers %} Followers {% else %} Following {% endif %} {% endblock %}
+{% block title %} {% if followers %} Followers {% elif likes %} Likes {% else %} Following {% endif %} {% endblock %}
 
 {% block content %}
     <div class="max-w-md mx-auto mt-10">
@@ -9,6 +9,8 @@
             <div class="px-4 py-3 border-b border-gray-200 text-center">
                 {% if followers %}
                     <h2 class="text-lg font-semibold text-gray-800">Followers</h2>
+                {% elif likes %}
+                    <h2 class="text-lg font-semibold text-gray-800">Likes</h2>
                 {% else %}
                     <h2 class="text-lg font-semibold text-gray-800">Following</h2>
                 {% endif %}
