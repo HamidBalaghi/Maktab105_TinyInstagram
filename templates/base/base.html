@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body style=" background-image: url({% static 'backgroungImage/bg.jpg' %}); background-size: cover ; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
-    {% include 'base/navbar.html' %}
+{% include 'base/navbar.html' %}
+
+<div class="pt-12">
+
     {% block content %} {% endblock %}
+
 </body>
 </html>
