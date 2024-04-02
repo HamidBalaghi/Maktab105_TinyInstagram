@@ -1,7 +1,7 @@
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
-from core.mixin import LoginRequiredMixin, ProfilePermissionMixin
+from core.mixin import LoginRequiredMixin, ProfilePermissionMixin, NavbarMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, UpdateView, DetailView, TemplateView
 from .forms import CustomSignUpForm, CustomUserLoginForm, VerifyForm
@@ -88,7 +88,7 @@ class UserActivationView(FormView):
             return self.form_invalid(form)
 
 
-class EditProfileView(LoginRequiredMixin, UpdateView):
+class EditProfileView(LoginRequiredMixin, NavbarMixin, UpdateView):
     model = Profile
     template_name = 'account/editprofile.html'
     fields = ['image', 'about_me', 'is_active', 'is_public']
@@ -105,13 +105,13 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('accounts:profile', kwargs={'pk': self.kwargs['pk']})
 
 
-class ProfileView(LoginRequiredMixin, ProfilePermissionMixin, DetailView):
+class ProfileView(LoginRequiredMixin, ProfilePermissionMixin, NavbarMixin, DetailView):
     model = Profile
     template_name = 'profile/profile.html'
     context_object_name = 'profile'
 
 
-class ShowFollowView(LoginRequiredMixin, DetailView):
+class ShowFollowView(LoginRequiredMixin, NavbarMixin, DetailView):
     model = Profile
     template_name = 'profile/follow.html'
     context_object_name = 'profile'
