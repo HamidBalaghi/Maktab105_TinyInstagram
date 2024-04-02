@@ -2,13 +2,15 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView, DetailView, ListView
 from .forms import NewPostForm
 from accounts.models import Profile
 from .models import Post, Image
 from core.mixin import LoginRequiredMixin
 from reactions.forms import NewCommentForm
 from reactions.models import Comment
+
+from django.contrib.auth import get_user_model
 
 
 class NewPostView(LoginRequiredMixin, FormView):
@@ -91,3 +93,28 @@ class PostDetailView(LoginRequiredMixin, DetailView):
             print('invalid (test)')
 
         return redirect('post:post', pk=self.kwargs['pk'])
+
+
+class HomeView(ListView):
+    model = Post
+    template_name = 'home/home.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        user = self.request.user.profile
+        following = user.get_followings
+
+        queryset = queryset.filter(profile__in=following)
+        queryset = queryset.order_by('-publish_at')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user.profile
+        posts = self.get_queryset()
+        context['postss'] = posts
+        for post in posts:
+            post.user_like_reaction = post.user_reaction(user)
+
+        return context
