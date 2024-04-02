@@ -1,14 +1,24 @@
-<nav class="bg-gray-800 p-4">
+<nav class="bg-gray-600 p-4 opacity-90">
     <div class="container mx-auto flex justify-between items-center">
 
         <div>
-            <ul class="flex space-x-4">
-                <li><a href="#" class="text-white">Home</a></li>
-                <li><a href="#" class="text-white">About</a></li>
+            <ul class="flex space-x-4 items-center">
+                <li>
+                    {% if logged_in_user %}
+                    <a href="{% url 'post:home'  %}" class="text-white flex items-center">
+                        <img src="{{ logged_in_user_image }}" alt="{{ logged_in_user }}" class="w-8 h-8 rounded-full mr-2"> <!-- Image to the left -->
+                        <span>{{ logged_in_user }}</span> <!-- Name to the right -->
+                    </a>
+                    {% endif %}
+                </li>
+                {% if logged_in_user %}
+                <li><a href="{% url 'accounts:profile' pk=logged_in_user_pk %}" class="text-white">Profile</a></li>
+                {% endif%}
+                <li><a href="#" class="text-white">Explore</a></li>
             </ul>
         </div>
         <div>
-            <a href="#" class="text-white text-xl font-bold">Tiny Instagram</a>
+            <a href="{% url 'accounts:logout' %}" class="text-white text-xl font-bold">Logout</a>
         </div>
     </div>
 </nav>
