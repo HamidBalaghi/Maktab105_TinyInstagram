@@ -1,0 +1,161 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}home{% endblock %}
+{% block content %}
+    <div class="container mx-auto my-8">
+        {% for post in postss %}
+            <div class="w-1/2 mx-auto bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="flex items-center justify-between p-4 ">
+                    <!-- Owner image and name -->
+                    <div class="flex items-center">
+                        <img src="{{ post.profile.get_image_url }}" class="w-8 h-8 rounded-full">
+                        <span class="ml-2 hover:underline"><a
+                                href="{% url 'accounts:profile' pk=post.profile.pk %}">{{ post.profile }}</a></span>
+                    </div>
+                    <!-- Publish date -->
+                    <div class="text-sm text-gray-500">{{ post.publish_at }}</div>
+                </div>
+                <!-- Post image -->
+
+                <div class="flex flex-col" style="text-align: center;">
+                    {% for img in post.get_images %}
+                        <a href="{% url 'post:post' pk=post.pk %}"
+                           style="display: block; margin-top: 10px; margin-bottom: 10px;">
+                            <img src="{{ img.image.url }}" class="rounded-lg border border-gray-400 shadow-lg m-2"
+                                 style="width: 98%; height: auto; margin: 0 auto;">
+                        </a>
+                    {% endfor %}
+                </div>
+
+                {% if post.user_like_reaction == 'liked' %}
+                    <div class="post" id="post_{{ post.pk }}">
+                        <div class="flex items-center">
+                            <a onclick="like('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Like button with emoji -->
+                                <span class="mr-4"><img class="like_image" src="{% static 'like/liked.svg' %}"
+                                                        width="20px"
+                                                        alt="Like Button"></span>
+                            </a>
+                            <span class="mr-5"><a href="#"
+                                                  class="like_count">{{ post.get_reactions.like_count }}</a></span>
+                            ||
+                            <span class="ml-5"><a href="#"
+                                                  class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
+                            <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Dislike button with emoji -->
+                                <span class="mr-4"><img class="dislike_image" src="{% static 'like/unlike.jpg' %}"
+                                                        width="20px" alt="Dislike Button"></span>
+                            </a>
+                        </div>
+                    </div>
+                {% elif post.user_like_reaction == 'disliked' %}
+                    <div class="post" id="post_{{ post.pk }}">
+                        <div class="flex items-center">
+                            <a onclick="like('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Like button with emoji -->
+                                <span class="mr-4"><img class="like_image" src="{% static 'like/like.svg' %}"
+                                                        width="20px"
+                                                        alt="Like Button"></span>
+                            </a>
+                            <span class="mr-5"><a href="#"
+                                                  class="like_count">{{ post.get_reactions.like_count }}</a></span>
+                            ||
+                            <span class="ml-5"><a href="#"
+                                                  class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
+                            <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Dislike button with emoji -->
+                                <span class="mr-4"><img class="dislike_image" src="{% static 'like/unliked.jpg' %}"
+                                                        width="20px" alt="Dislike Button"></span>
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="post" id="post_{{ post.pk }}">
+                        <div class="flex items-center">
+                            <a onclick="like('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Like button with emoji -->
+                                <span class="mr-4"><img class="like_image" src="{% static 'like/like.svg' %}"
+                                                        width="20px"
+                                                        alt="Like Button"></span>
+                            </a>
+                            <span class="mr-5"><a href="#"
+                                                  class="like_count">{{ post.get_reactions.like_count }}</a></span>
+                            ||
+                            <span class="ml-5"><a href="#"
+                                                  class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
+                            <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
+                                <!-- Dislike button with emoji -->
+                                <span class="mr-4"><img class="dislike_image" src="{% static 'like/unlike.jpg' %}"
+                                                        width="20px" alt="Dislike Button"></span>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Post description -->
+                <div class="p-4 italic">
+                    <p>{{ post.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function like(pk, element) {
+            var postElement = element.closest('.post');
+            var likeimage = postElement.querySelector('.like_image');
+            var dislikeimage = postElement.querySelector('.dislike_image');
+            var likecount = postElement.querySelector('.like_count');
+            var dislikecount = postElement.querySelector('.dislike_count');
+
+            $.get(`/like/post/${pk}`).then(response => {
+                if (response['response'] === 'no_reaction') {
+                    likeimage.src = '{% static 'like/like.svg' %}';
+                    dislikeimage.src = '{% static 'like/unlike.jpg' %}';
+                    likecount.innerText = Number(likecount.innerText) - 1;
+                } else if (response['response'] === 'liked') {
+                    likeimage.src = '{% static 'like/liked.svg' %}';
+                    dislikeimage.src = '{% static 'like/unlike.jpg' %}';
+                    likecount.innerText = Number(likecount.innerText) + 1;
+                    dislikecount.innerText = Number(dislikecount.innerText) - 1;
+                } else {
+                    likeimage.src = '{% static 'like/liked.svg' %}';
+                    dislikeimage.src = '{% static 'like/unlike.jpg' %}';
+                    likecount.innerText = Number(likecount.innerText) + 1;
+                }
+            });
+        }
+
+        function dislike(pk, element) {
+            var postElement = element.closest('.post');
+            var dislikeimage = postElement.querySelector('.dislike_image');
+            var likeimage = postElement.querySelector('.like_image');
+            var dislikecount = postElement.querySelector('.dislike_count');
+            var likecount = postElement.querySelector('.like_count');
+
+            $.get(`/dislike/post/${pk}`).then(response => {
+                if (response['response'] === 'no_reaction') {
+                    likeimage.src = '{% static 'like/like.svg' %}';
+                    dislikeimage.src = '{% static 'like/unlike.jpg' %}';
+                    dislikecount.innerText = Number(dislikecount.innerText) - 1;
+                } else if (response['response'] === 'disliked') {
+                    likeimage.src = '{% static 'like/like.svg' %}';
+                    dislikeimage.src = '{% static 'like/unliked.jpg' %}';
+                    likecount.innerText = Number(likecount.innerText) - 1;
+                    dislikecount.innerText = Number(dislikecount.innerText) + 1;
+                } else {
+                    likeimage.src = '{% static 'like/like.svg' %}';
+                    dislikeimage.src = '{% static 'like/unliked.jpg' %}';
+                    dislikecount.innerText = Number(dislikecount.innerText) + 1;
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+
+
+
+
