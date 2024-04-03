@@ -126,7 +126,7 @@ class ExploreView(LoginRequiredMixin, NavbarMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        user_following = self.request.user.profile.get_followings
+        user_following = self.request.user.profile.get_followings + [self.request.user.profile]
         queryset = queryset.filter(is_active=True, publishable=True, profile__is_public=True).exclude(
             profile__in=user_following)
         queryset = queryset.order_by('-publish_at')
