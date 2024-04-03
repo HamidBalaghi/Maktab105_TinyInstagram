@@ -42,7 +42,7 @@ class ProfilePermissionMixin:
             context['followings_count'] = len(followings_temp)
 
             if owner.is_public or user in owner_followers:
-                context['posts'] = owner.posts.filter(publishable=True, is_active=True)
+                context['posts'] = owner.posts.filter(publishable=True, is_active=True).order_by('-publish_at')
                 context['has_perm'] = True
             elif user == owner:
                 context['posts'] = owner.posts.filter(publishable=True)
