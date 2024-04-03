@@ -21,7 +21,6 @@ class LikeView(View):
         if not request.user.profile.is_active or not post.is_active or not post.publishable:
             raise PermissionDenied
         if not post_owner.is_public and request.user.profile not in post_owner.get_followers and post_owner != request.user.profile:
-            print('2')
             raise PermissionDenied
 
         return super().dispatch(request, *args, **kwargs)
