@@ -2,6 +2,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import FormView, DetailView, ListView
 from .forms import NewPostForm
 from accounts.models import Profile
@@ -131,3 +132,26 @@ class ExploreView(LoginRequiredMixin, NavbarMixin, ListView):
         queryset = queryset.order_by('-publish_at')
 
         return queryset
+
+
+class SuggestView(LoginRequiredMixin, NavbarMixin, ListView):
+    model = Profile
+    template_name = 'profile/follow.html'
+    context_object_name = 'people'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.user_following = self.request.user.profile.get_followings
+        following = [profile.pk for profile in self.user_following]
+        user_pk = self.request.user.profile.pk
+        queryset = queryset.filter(is_active=True, is_public=True).exclude(pk__in=following + [user_pk])
+        queryset = queryset.order_by('-created_at')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user.profile
+        context['user_following'] = self.user_following
+        context['suggest'] = True
+        return context
