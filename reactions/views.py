@@ -123,6 +123,8 @@ class ShowLikes(LoginRequiredMixin, NavbarMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.login_user = self.request.user.profile
+        context['user'] = self.login_user
+        context['user_following'] = self.login_user.get_followings
 
         if '/show_likes/' in self.request.path:
             context['people'] = self.post.get_reactions()['likes']
