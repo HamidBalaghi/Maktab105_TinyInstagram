@@ -4,10 +4,16 @@
 {% block content %}
     <div class="container mx-auto px-4 py-8">
         <!-- Explore Card -->
-        <div class="w-4/5 mx-auto bg-gradient-to-br from-blue-200 via-purple-400 to-red-200 rounded-xl overflow-hidden shadow-lg">
+        <div class="w-4/5 mx-auto bg-gradient-to-br from-blue-600 via-purple-400 to-red-200 rounded-xl overflow-hidden shadow-lg">
             <div class="p-6 border-t border-gray-200">
+            <!-- Buttons Section -->
+                <div class="flex justify-evenly mt-4 mb-2">
+                    <!-- Suggestions Button -->
+                    <a href="{% url 'post:suggestions' %}"
+                       class="bg-gradient-to-br from-blue-200 via-purple-400 to-red-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >Suggestions</a>
+                </div>
                 <div class="flex justify-evenly mt-10 mb-2 mr-10 mb-6">
-                    <span class="text-2xl font-bold text-shadow-lg">Posts</span>
+                    <span class="text-2xl font-bold text-shadow-lg pl-8">Explore Posts</span>
                 </div>
                 <div class="flex justify-evenly">
                     <!-- Posts Section -->
