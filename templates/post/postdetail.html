@@ -34,9 +34,9 @@
                             <span class="mr-4"><img id="like_image" src="{% static 'like/liked.svg' %}" width="20px"
                                                     alt="Like Button"></span>
                         </a>
-                        <span class="mr-5"><a href="#" id="like_count">{{ reactions.like_count }}</a></span>
+                        <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}" id="like_count">{{ reactions.like_count }}</a></span>
                         ||
-                        <span class="ml-5"><a href="#" id="dislike_count">{{ reactions.dislike_count }}</a></span>
+                        <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}" id="dislike_count">{{ reactions.dislike_count }}</a></span>
                         <a onclick="dislike('{{ post.pk }}')" class="flex items-center mr-1 ml-6">
                             <!-- Dislike button with emoji -->
                             <span class="mr-4"><img id="dislike_image" src="{% static 'like/unlike.jpg' %}" width="20px"
@@ -51,9 +51,9 @@
                             <span class="mr-4"><img id="like_image" src="{% static 'like/like.svg' %}" width="20px"
                                                     alt="Like Button"></span>
                         </a>
-                        <span class="mr-5"><a href="#" id="like_count">{{ reactions.like_count }}</a></span>
+                        <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}" id="like_count">{{ reactions.like_count }}</a></span>
                         ||
-                        <span class="ml-5"><a href="#" id="dislike_count">{{ reactions.dislike_count }}</a></span>
+                        <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}" id="dislike_count">{{ reactions.dislike_count }}</a></span>
                         <a onclick="dislike('{{ post.pk }}')" class="flex items-center mr-1 ml-6">
                             <!-- Dislike button with emoji -->
                             <span class="mr-4"><img id="dislike_image" src="{% static 'like/unliked.jpg' %}"
@@ -69,9 +69,9 @@
                             <span class="mr-4"><img id="like_image" src="{% static 'like/like.svg' %}" width="20px"
                                                     alt="Like Button"></span>
                         </a>
-                        <span class="mr-5"><a href="#" id="like_count">{{ reactions.like_count }}</a></span>
+                        <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}" id="like_count">{{ reactions.like_count }}</a></span>
                         ||
-                        <span class="ml-5"><a href="#" id="dislike_count">{{ reactions.dislike_count }}</a></span>
+                        <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}" id="dislike_count">{{ reactions.dislike_count }}</a></span>
                         <a onclick="dislike('{{ post.pk }}')" class="flex items-center mr-1 ml-6">
                             <!-- Dislike button with emoji -->
                             <span class="mr-4"><img id="dislike_image" src="{% static 'like/unlike.jpg' %}" width="20px"
