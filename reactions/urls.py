@@ -9,4 +9,6 @@ urlpatterns = [
     path('follow/<int:pk>', views.FollowView.as_view(), name='follow_user'),
     path('unfollow/<int:pk>', views.FollowView.as_view(), name='unfollow_user'),
     path('delete_comment/<int:pk>', views.DeleteComment.as_view(), name='delete_comment'),
+    path('show_likes/<int:pk>', views.ShowLikes.as_view(), name='show_likes'),
+    path('show_dislikes/<int:pk>', views.ShowLikes.as_view(), name='show_dislikes'),
 ]
