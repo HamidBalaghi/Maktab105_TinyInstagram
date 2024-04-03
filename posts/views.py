@@ -10,8 +10,6 @@ from core.mixin import LoginRequiredMixin, NavbarMixin
 from reactions.forms import NewCommentForm
 from reactions.models import Comment
 
-from django.contrib.auth import get_user_model
-
 
 class NewPostView(LoginRequiredMixin, NavbarMixin, FormView):
     form_class = NewPostForm
@@ -118,3 +116,18 @@ class HomeView(LoginRequiredMixin, NavbarMixin, ListView):
             post.user_like_reaction = post.user_reaction(user)
 
         return context
+
+
+class ExploreView(LoginRequiredMixin, NavbarMixin, ListView):
+    model = Post
+    template_name = 'profile/explore.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user_following = self.request.user.profile.get_followings
+        queryset = queryset.filter(is_active=True, publishable=True, profile__is_public=True).exclude(
+            profile__in=user_following)
+        queryset = queryset.order_by('-publish_at')
+
+        return queryset
