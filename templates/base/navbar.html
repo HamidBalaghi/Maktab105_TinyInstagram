@@ -14,7 +14,7 @@
                 {% if logged_in_user %}
                     <li><a href="{% url 'accounts:profile' pk=logged_in_user_pk %}" class="text-white">Profile</a></li>
                 {% endif %}
-                <li><a href="#" class="text-white">Explore</a></li>
+                <li><a href="{% url 'post:explore' %}" class="text-white">Explore</a></li>
             </ul>
         </div>
         <div>
