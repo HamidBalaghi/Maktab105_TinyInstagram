@@ -1,6 +1,7 @@
 {% extends 'base/base.html' %}
 
-{% block title %} {% if followers %} Followers {% elif likes %} Likes {% elif dislikes %} Dislikes {% else %} Following {% endif %} {% endblock %}
+{% block title %} {% if followers %} Followers {% elif likes %} Likes {% elif dislikes %} Dislikes {% elif suggest %}
+    Suggestions {% else %} Following {% endif %} {% endblock %}
 
 {% block content %}
     <div class="max-w-md mx-auto mt-10">
@@ -13,6 +14,8 @@
                     <h2 class="text-lg font-semibold text-gray-800">Likes</h2>
                 {% elif dislikes %}
                     <h2 class="text-lg font-semibold text-gray-800">Dislikes</h2>
+                {% elif suggest %}
+                    <h2 class="text-lg font-semibold text-gray-800">Suggestions</h2>
                 {% else %}
                     <h2 class="text-lg font-semibold text-gray-800">Following</h2>
                 {% endif %}
