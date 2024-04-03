@@ -9,4 +9,5 @@ urlpatterns = [
     path('post/<int:pk>', views.PostDetailView.as_view(), name='post'),
     path('', views.HomeView.as_view(), name='home'),
     path('explore/', views.ExploreView.as_view(), name='explore'),
+    path('suggestions/', views.SuggestView.as_view(), name='suggestions'),
 ]
