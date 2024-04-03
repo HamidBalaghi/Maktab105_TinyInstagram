@@ -36,10 +36,10 @@
                                                         width="20px"
                                                         alt="Like Button"></span>
                             </a>
-                            <span class="mr-5"><a href="#"
+                            <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}"
                                                   class="like_count">{{ post.get_reactions.like_count }}</a></span>
                             ||
-                            <span class="ml-5"><a href="#"
+                            <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}"
                                                   class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
                             <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
                                 <!-- Dislike button with emoji -->
@@ -57,10 +57,10 @@
                                                         width="20px"
                                                         alt="Like Button"></span>
                             </a>
-                            <span class="mr-5"><a href="#"
+                            <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}"
                                                   class="like_count">{{ post.get_reactions.like_count }}</a></span>
                             ||
-                            <span class="ml-5"><a href="#"
+                            <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}"
                                                   class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
                             <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
                                 <!-- Dislike button with emoji -->
@@ -78,10 +78,10 @@
                                                         width="20px"
                                                         alt="Like Button"></span>
                             </a>
-                            <span class="mr-5"><a href="#"
+                            <span class="mr-5"><a href="{% url 'reactions:show_likes' pk=post.pk %}"
                                                   class="like_count">{{ post.get_reactions.like_count }}</a></span>
                             ||
-                            <span class="ml-5"><a href="#"
+                            <span class="ml-5"><a href="{% url 'reactions:show_dislikes' pk=post.pk %}"
                                                   class="dislike_count">{{ post.get_reactions.dislike_count }}</a></span>
                             <a onclick="dislike('{{ post.pk }}', this)" class="flex items-center mr-1 ml-6">
                                 <!-- Dislike button with emoji -->
