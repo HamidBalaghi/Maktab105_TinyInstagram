@@ -144,7 +144,7 @@ class SuggestView(LoginRequiredMixin, NavbarMixin, ListView):
         self.user_following = self.request.user.profile.get_followings
         following = [profile.pk for profile in self.user_following]
         user_pk = self.request.user.profile.pk
-        queryset = queryset.filter(is_active=True, is_public=True).exclude(pk__in=following + [user_pk])
+        queryset = queryset.filter(is_active=True).exclude(pk__in=following + [user_pk])
         queryset = queryset.order_by('-created_at')
 
         return queryset
