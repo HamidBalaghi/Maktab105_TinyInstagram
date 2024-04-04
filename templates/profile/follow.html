@@ -1,48 +1,69 @@
 {% extends 'base/base.html' %}
 
-{% block title %} {% if followers %} Followers {% elif likes %} Likes {% elif dislikes %} Dislikes {% elif suggest %}
-    Suggestions {% else %} Following {% endif %} {% endblock %}
+{% block title %}
+    {% if followers %}
+        Followers
+    {% elif likes %}
+        Likes
+    {% elif dislikes %}
+        Dislikes
+    {% elif suggest %}
+        Suggestions
+    {% else %}
+        Following
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <div class="max-w-md mx-auto mt-10">
-        <div id="follower-card"
-             class="bg-gradient-to-r from-green-100 via-blue-400 to-gray-500 rounded-lg overflow-hidden shadow-md opacity-90">
-            <div class="px-4 py-3 border-b border-gray-200 text-center">
-                {% if followers %}
-                    <h2 class="text-lg font-semibold text-gray-800">Followers</h2>
-                {% elif likes %}
-                    <h2 class="text-lg font-semibold text-gray-800">Likes</h2>
-                {% elif dislikes %}
-                    <h2 class="text-lg font-semibold text-gray-800">Dislikes</h2>
-                {% elif suggest %}
-                    <h2 class="text-lg font-semibold text-gray-800">Suggestions</h2>
-                {% else %}
-                    <h2 class="text-lg font-semibold text-gray-800">Following</h2>
-                {% endif %}
-            </div>
-            {% for person in people %}
-                <div class="flex items-center border-b border-gray-200 px-4 py-3">
-                    <img src="{{ person.get_image_url }}" alt="{{ person }}"
-                         class="w-10 h-10 object-cover rounded-full mr-3">
-                    <a href="{% url 'accounts:profile' pk=person.user.id %}"
-                       class="text-gray-800 font-semibold hover:underline">{{ person }}</a>
-                    {% if person != user and person in user_following %}
-                        <a onclick="unfollow(this, '{{ person.pk }}')"
-                           class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
-                           style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
-                            Unfollow
-                        </a>
-                    {% elif person != user and person not in user_following %}
-                        <a onclick="follow(this, '{{ person.pk }}')"
-                           class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
-                           style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
-                            Follow
-                        </a>
+        <div class="p-6 border-t border-gray-200">
+            {% if suggest %}
+                <form method="GET" action="" class="mb-4">
+                    <input type="text" name="query" placeholder="Search..."
+                           class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500">
+                    <button type="submit"
+                            class="mt-2 w-full bg-indigo-500 text-white rounded-md px-3 py-2 font-semibold hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">
+                        Search
+                    </button>
+                </form>
+            {% endif %}
+            <div id="follower-card"
+                 class="bg-gradient-to-r from-green-100 via-blue-400 to-gray-500 rounded-lg overflow-hidden shadow-md opacity-90">
+                <div class="px-4 py-3 border-b border-gray-200 text-center">
+                    {% if followers %}
+                        <h2 class="text-lg font-semibold text-gray-800">Followers</h2>
+                    {% elif likes %}
+                        <h2 class="text-lg font-semibold text-gray-800">Likes</h2>
+                    {% elif dislikes %}
+                        <h2 class="text-lg font-semibold text-gray-800">Dislikes</h2>
+                    {% elif suggest %}
+                        <h2 class="text-lg font-semibold text-gray-800">Suggestions</h2>
+                    {% else %}
+                        <h2 class="text-lg font-semibold text-gray-800">Following</h2>
                     {% endif %}
                 </div>
-            {% endfor %}
-
-
+                {% for person in people %}
+                    <div class="flex items-center border-b border-gray-200 px-4 py-3">
+                        <img src="{{ person.get_image_url }}" alt="{{ person }}"
+                             class="w-10 h-10 object-cover rounded-full mr-3">
+                        <a href="{% url 'accounts:profile' pk=person.user.id %}"
+                           class="text-gray-800 font-semibold hover:underline">{{ person }}</a>
+                        {% if person != user and person in user_following %}
+                            <a onclick="unfollow(this, '{{ person.pk }}')"
+                               class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
+                               style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
+                                Unfollow
+                            </a>
+                        {% elif person != user and person not in user_following %}
+                            <a onclick="follow(this, '{{ person.pk }}')"
+                               class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
+                               style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
+                                Follow
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
@@ -100,9 +121,4 @@
             });
         }
     </script>
-
 {% endblock %}
-
-
-
-
