@@ -6,29 +6,88 @@
         <!-- Explore Card -->
         <div class="w-4/5 mx-auto bg-gradient-to-br from-blue-600 via-purple-400 to-red-200 rounded-xl overflow-hidden shadow-lg">
             <div class="p-6 border-t border-gray-200">
-            <!-- Buttons Section -->
+                <!-- Buttons Section -->
                 <div class="flex justify-evenly mt-4 mb-2">
                     <!-- Suggestions Button -->
                     <a href="{% url 'post:suggestions' %}"
-                       class="bg-gradient-to-br from-blue-200 via-purple-400 to-red-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >Suggestions</a>
+                       class="flex-shrink-0 bg-gradient-to-br from-blue-200 via-purple-400 to-red-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2 h-full">Suggestions</a>
+                    <!-- Search form -->
+                    <form method="GET" action="" class="mb-4 flex">
+                        <input type="text" name="query" placeholder="Search..."
+                               class="flex-grow px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500 mr-2 h-full">
+                        <button type="submit"
+                                class="flex-shrink-0 bg-indigo-500 text-white rounded-md px-3 py-2 font-semibold hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600 h-full">
+                            Search
+                        </button>
+                    </form>
                 </div>
-                <div class="flex justify-evenly mt-10 mb-2 mr-10 mb-6">
-                    <span class="text-2xl font-bold text-shadow-lg pl-8">Explore Posts</span>
-                </div>
-                <div class="flex justify-evenly">
-                    <!-- Posts Section -->
-                    <div class="m-2 grid grid-cols-3 gap-4">
-                        <!-- Replace the following with Django template rendering -->
-                        {% for post in posts %}
-                            <a href="{% url 'post:post' pk=post.pk %}">
-                                <div class="w-full relative">
-                                    <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
-                                         src="{{ post.first_image.image.url }}" alt="Post Image">
-                                </div>
-                            </a>
-                        {% endfor %}
+                {% if not search %}
+                    <div class="flex justify-evenly mt-10 mb-2 mr-10 mb-6">
+                        <span class="text-2xl font-bold text-shadow-lg pl-8">Explore Posts</span>
                     </div>
-                </div>
+                    <div class="flex justify-evenly">
+                        <!-- Posts Section -->
+                        <div class="m-2 grid grid-cols-3 gap-4">
+                            <!-- Replace the following with Django template rendering -->
+                            {% for post in posts %}
+                                <a href="{% url 'post:post' pk=post.pk %}">
+                                    <div class="w-full relative">
+                                        <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
+                                             src="{{ post.first_image.image.url }}" alt="Post Image">
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex justify-evenly mt-10 mb-2 mr-10 mb-6">
+                        <span class="text-2xl font-bold text-shadow-lg pl-8">Results for: {{ search }} </span>
+                    </div>
+
+                    <h3>People:</h3>
+                    {% for person in people %}
+                        <div class="flex items-center border-b border-gray-200 px-4 py-3">
+                            <img src="{{ person.get_image_url }}" alt="{{ person }}"
+                                 class="w-10 h-10 object-cover rounded-full mr-3">
+                            <a href="{% url 'accounts:profile' pk=person.user.id %}"
+                               class="text-gray-800 font-semibold hover:underline">{{ person }}</a>
+                            {% if person != user and person in user_following %}
+                                <a onclick="unfollow(this, '{{ person.pk }}')"
+                                   class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
+                                   style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
+                                    Unfollow
+                                </a>
+                            {% elif person != user and person not in user_following %}
+                                <a onclick="follow(this, '{{ person.pk }}')"
+                                   class="follow-action-button ml-auto bg-purple-700 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
+                                   style="width: 100px; display: inline-block; text-align: center; text-decoration: none;">
+                                    Follow
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+
+                    <div class="flex justify-evenly mt-10 mb-2 mr-10 mb-6">
+                        <span class="text-2xl font-bold text-shadow-lg pl-8">Results for {{ search }} hashtag</span>
+                    </div>
+                    <div class="flex justify-evenly">
+                        <!-- Posts Section -->
+                        <div class="m-2 grid grid-cols-3 gap-4">
+                            <!-- Replace the following with Django template rendering -->
+                            {% for post in hashtags %}
+                                <a href="{% url 'post:post' pk=post.pk %}">
+                                    <div class="w-full relative">
+                                        <img class="object-cover w-full h-48 rounded-lg border border-gray-300 transition-transform duration-300 transform hover:scale-105"
+                                             src="{{ post.first_image.image.url }}" alt="Post Image">
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% endif %}
+
             </div>
         </div>
     </div>
