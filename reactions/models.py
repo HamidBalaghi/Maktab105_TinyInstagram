@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.text import slugify
+
 from accounts.models import Profile
 from posts.models import Post
 
@@ -19,3 +21,16 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     is_deleted = models.BooleanField(default=False)
+
+
+class Hashtag(models.Model):
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True)
+    posts = models.ManyToManyField(Post, related_name='hashtags')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
