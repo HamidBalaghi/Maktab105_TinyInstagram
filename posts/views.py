@@ -1,5 +1,8 @@
+import re
+
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -10,6 +13,7 @@ from .models import Post, Image
 from core.mixin import LoginRequiredMixin, NavbarMixin
 from reactions.forms import NewCommentForm
 from reactions.models import Comment
+from reactions.models import Hashtag
 
 
 class NewPostView(LoginRequiredMixin, NavbarMixin, FormView):
@@ -31,6 +35,10 @@ class NewPostView(LoginRequiredMixin, NavbarMixin, FormView):
         images = [form.cleaned_data[f'image{i}'] for i in range(1, 5)]
 
         new_post = Post.objects.create(profile=self.owner, description=description)
+
+        hashtags = re.findall(r'#(\w+)', description)
+        new_post.hashtags.add(*[Hashtag.objects.get_or_create(title=title.lower())[0] for title in hashtags])
+
         for image in images:
             if image:
                 Image.objects.create(post=new_post, image=image)
@@ -132,6 +140,25 @@ class ExploreView(LoginRequiredMixin, NavbarMixin, ListView):
         queryset = queryset.order_by('-publish_at')
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_following = self.request.user.profile.get_followings
+        query = self.request.GET.get('query')
+        if query:
+            context['search'] = query
+            hashtag = Hashtag.objects.filter(slug=query.lower()).first()
+            if hashtag is not None:
+                context['hashtags'] = hashtag.posts.filter(is_active=True, publishable=True,
+                                                           profile__is_active=True).exclude(
+                    Q(profile__is_public=False) & ~Q(profile__in=user_following))
+            context['people'] = Profile.objects.filter(user__name__icontains=query).exclude(is_active=False)
+            context['user'] = self.request.user.profile
+            context['user_following'] = user_following
+
+        else:
+            context['search'] = False
+        return context
 
 
 class SuggestView(LoginRequiredMixin, NavbarMixin, ListView):
